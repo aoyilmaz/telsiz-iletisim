@@ -6,45 +6,35 @@
   <meta name="theme-color" content="#1a1a2e">
   <meta name="description" content="Türkiye amatör telsiz röle istasyonları — çevrimdışı çalışan afet iletişim haritası">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AfetTelsiz">
 
   <title>Afet İletişim Haritası</title>
 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon.svg">
 
-  <!-- LeafletJS CSS -->
-  <link rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin="">
+  <!-- LeafletJS CSS — integrity hash olmadan, CDN güvenilirliği için -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ── Header ─────────────────────────────────────────── -->
+  <!-- ── Header ─────────────────────────────────────── -->
   <header class="app-header">
     <div class="header-left">
       <span class="header-icon">📡</span>
       <h1>Afet İletişim Haritası</h1>
     </div>
     <div class="header-right">
-      <button id="btn-training" class="btn btn-secondary" title="Baofeng UV-5R Programlama Rehberi">
-        📻 Rehber
-      </button>
-      <button id="btn-offline" class="btn btn-primary" title="Haritayı çevrimdışı kaydet" disabled>
-        💾 Kaydet
-      </button>
+      <button id="btn-training" class="btn btn-secondary">📻 Rehber</button>
+      <button id="btn-offline"  class="btn btn-primary" title="Çevrimdışı kullanım için harita parçalarını kaydet">💾 Kaydet</button>
     </div>
   </header>
 
-  <!-- ── Main layout ────────────────────────────────────── -->
+  <!-- ── Main layout ────────────────────────────────── -->
   <div class="app-body">
 
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <h2>Röle İstasyonları</h2>
@@ -54,54 +44,35 @@
           <button class="filter-btn"        data-filter="digital">Dijital</button>
         </div>
       </div>
-      <div class="relay-list" id="relay-list">
-        <!-- JS tarafından doldurulur -->
-      </div>
+      <div class="relay-list" id="relay-list"></div>
     </aside>
 
-    <!-- Map -->
     <main class="map-container">
       <div id="map"></div>
       <div class="offline-status">
-        <span class="status-dot online" id="status-dot"></span>
-        <span id="status-text">Çevrimiçi</span>
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Yükleniyor…</span>
       </div>
     </main>
 
   </div>
 
-  <!-- ── Training modal ─────────────────────────────────── -->
-  <div class="modal-overlay" id="training-modal" role="dialog" aria-modal="true" aria-labelledby="training-title">
+  <!-- ── Training modal ─────────────────────────────── -->
+  <div class="modal-overlay" id="training-modal">
     <div class="modal">
       <div class="modal-header">
         <h2 id="training-title">Programlama Rehberi</h2>
-        <button class="modal-close" id="modal-close" aria-label="Kapat">✕</button>
+        <button class="modal-close" id="modal-close">✕</button>
       </div>
-      <div class="modal-body" id="training-body">
-        <!-- JS tarafından doldurulur -->
-      </div>
+      <div class="modal-body" id="training-body"></div>
     </div>
   </div>
 
-  <!-- ── Download progress toast ────────────────────────── -->
-  <div class="download-progress" id="download-progress" style="display:none" role="status" aria-live="polite">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill"></div>
-    </div>
-    <p id="progress-text">Harita parçaları indiriliyor…</p>
-    <button id="btn-cancel-download" class="btn btn-danger" style="margin-top:6px;font-size:12px;padding:5px 12px">
-      İptal
-    </button>
-  </div>
 
-  <!-- ── LeafletJS ──────────────────────────────────────── -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WPgA="
-    crossorigin=""></script>
+  <!-- LeafletJS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- leaflet.offline — IndexedDB tabanlı çevrimdışı tile desteği -->
-  <script src="https://unpkg.com/leaflet.offline@2.2.0/dist/bundle.min.js"></script>
-
+  <!-- Uygulama -->
   <script src="app.js"></script>
 </body>
 </html>

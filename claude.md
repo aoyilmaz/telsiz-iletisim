@@ -1,5 +1,3 @@
-Claude'a doğrudan kopyalayıp yapıştırabileceğiniz `claude.md` dosyasının içeriğini aşağıda hazırladım. Bu metin, hem projenin teknik isterlerini hem de haritada kullanılacak afet iletişim verilerini içermektedir:
-
 # Afet İletişim Haritası - Proje Başlatma Belgesi
 
 Merhaba Claude. Sen uzman bir Frontend ve Web geliştiricisisin. Aşağıda detayları ve kaynak verileri bulunan, afet durumlarında internet kesilse bile çalışmaya devam edebilecek (offline-first) statik bir web sitesi hazırlamanı istiyorum. Bu proje GitHub Pages üzerinden tamamen ücretsiz olarak yayınlanacaktır.

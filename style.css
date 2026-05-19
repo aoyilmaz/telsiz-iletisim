@@ -143,8 +143,8 @@ body {
 .error-msg { padding: 16px; font-size: 13px; color: var(--muted); line-height: 1.5; }
 
 /* ── Map ── */
-.map-container { flex: 1; position: relative; overflow: hidden; }
-#map { width: 100%; height: 100%; }
+.map-container { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+#map { position: absolute; inset: 0; }
 
 /* ── Status pill ── */
 .offline-status {

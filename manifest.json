@@ -1,0 +1,21 @@
+{
+  "name": "Afet İletişim Haritası",
+  "short_name": "AfetTelsiz",
+  "description": "Türkiye amatör telsiz röle istasyonları afet iletişim haritası — çevrimdışı çalışır",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#1a1a2e",
+  "orientation": "any",
+  "lang": "tr",
+  "categories": ["utilities", "navigation"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "version": "1.0",
+  "updated": "2026-05-19",
+  "relays": [
+    {
+      "id": "ta8-r3-dulukbaba",
+      "name": "Dülükbaba / Sof Dağı",
+      "region": "TA8 - Gaziantep",
+      "type": "analog",
+      "band": "VHF",
+      "channel": "R3",
+      "listen_freq": 145.675,
+      "send_freq": 145.075,
+      "offset": -0.6,
+      "ctcss": 88.5,
+      "elevation_m": 1113,
+      "lat": 37.133,
+      "lon": 37.136,
+      "operator": "TA8OS",
+      "date_added": "2020-04-07",
+      "notes": "VHF Kanal R3. 88.5 Hz CTCSS tonu ile erişim. Dülükbaba / Sof Dağı tepesinde, 1113 metre rakımda konumlu."
+    },
+    {
+      "id": "ta8-r100-erikce",
+      "name": "Erikce Tepesi",
+      "region": "TA8 - Gaziantep",
+      "type": "analog",
+      "band": "UHF",
+      "channel": "R100",
+      "listen_freq": 439.4,
+      "send_freq": 431.8,
+      "offset": -7.6,
+      "ctcss": 88.5,
+      "elevation_m": 1113,
+      "lat": 37.123,
+      "lon": 37.301,
+      "operator": "TA8OS",
+      "date_added": "2020-04-07",
+      "notes": "UHF Kanal R100. TX üzerinde 88.5 Hz CTCSS tonu zorunludur. Erikce Tepesi, 1113 metre rakım."
+    },
+    {
+      "id": "ta5-mersin-insu-c4fm",
+      "name": "Mersin İnsu (C4FM)",
+      "region": "TA5 - Mersin",
+      "type": "digital",
+      "band": "UHF",
+      "protocol": "C4FM",
+      "listen_freq": 439.175,
+      "send_freq": 431.575,
+      "offset": -7.6,
+      "timeslot": null,
+      "lat": 36.812,
+      "lon": 34.643,
+      "operator": "TRAC",
+      "notes": "Yaesu System Fusion (C4FM). RX-TX: 33 kanal, Dijital/Analog entegrasyonu destekler."
+    },
+    {
+      "id": "ta5-mersin-insu-dmr",
+      "name": "Mersin İnsu (DMR)",
+      "region": "TA5 - Mersin",
+      "type": "digital",
+      "band": "UHF",
+      "protocol": "DMR",
+      "listen_freq": 439.2375,
+      "send_freq": 431.6375,
+      "offset": -7.6,
+      "timeslot": "TS-2",
+      "lat": 36.815,
+      "lon": 34.647,
+      "operator": "TRAC",
+      "notes": "DMR (Digital Mobile Radio) Zaman Dilimi 2 (Time Slot 2)."
+    },
+    {
+      "id": "ta5-adana-dmr",
+      "name": "Adana (DMR)",
+      "region": "TA5 - Adana",
+      "type": "digital",
+      "band": "UHF",
+      "protocol": "DMR",
+      "listen_freq": 439.1625,
+      "send_freq": 431.5625,
+      "offset": -7.6,
+      "timeslot": "TS-2",
+      "lat": 37.002,
+      "lon": 35.329,
+      "operator": "TRAC",
+      "notes": "DMR Zaman Dilimi 2 (Time Slot 2)."
+    },
+    {
+      "id": "ta5-adana2-dmr",
+      "name": "Adana 2 (DMR)",
+      "region": "TA5 - Adana",
+      "type": "digital",
+      "band": "UHF",
+      "protocol": "DMR",
+      "listen_freq": 439.25,
+      "send_freq": 431.65,
+      "offset": -7.6,
+      "timeslot": "TS-2",
+      "lat": 37.011,
+      "lon": 35.314,
+      "operator": "TRAC",
+      "notes": "DMR Zaman Dilimi 2 (Time Slot 2)."
+    },
+    {
+      "id": "ta5-cukurova-nxdn",
+      "name": "Çukurova (NXDN)",
+      "region": "TA5 - Çukurova",
+      "type": "digital",
+      "band": "UHF",
+      "protocol": "NXDN",
+      "listen_freq": 439.2875,
+      "send_freq": 431.6875,
+      "offset": -7.6,
+      "timeslot": null,
+      "lat": 37.052,
+      "lon": 35.577,
+      "operator": "CURAD",
+      "notes": "NXDN — Dar Bant Sayısal İletişim Protokolü. Çukurova Radyo Amatörleri Derneği (CURAD) işletmesi."
+    }
+  ],
+  "baofeng_programming": {
+    "title": "Baofeng UV-5R Manuel VFO Programlama",
+    "target_relay": "Gaziantep VHF Rölesi — R3 (145.675 MHz)",
+    "steps": [
+      {
+        "step": 1,
+        "title": "VFO Modunu Aktif Et",
+        "description": "Turuncu renkli VFO/MR tuşuna basarak hafıza (MR) modundan çık ve frekans (VFO) modunu aktif et. Ekranda kanallar yerine frekans rakamları görünmeye başlayacak."
+      },
+      {
+        "step": 2,
+        "title": "Dinleme Frekansını Gir",
+        "description": "Tuş takımından 145.675 değerini gir. Bu rölenin yayın (TX) frekansıdır — senin dinleyeceğin (RX) frekanstır."
+      },
+      {
+        "step": 3,
+        "title": "Offset Yönünü Ayarla",
+        "description": "MENU tuşuna bas → Menü 25 (SFT-D) seçeneğine git → Offset yönü olarak EKSI (-) seçeneğini seç ve MENU ile onayla, ardından EXIT."
+      },
+      {
+        "step": 4,
+        "title": "Offset Miktarını Gir",
+        "description": "MENU → Menü 26 (OFFSET) → VHF bandı standardı olan 00.600 değerini tuşla → MENU ile kaydet → EXIT."
+      },
+      {
+        "step": 5,
+        "title": "CTCSS Ton Şifresini Programla",
+        "description": "MENU → Menü 13 (T-CTCS) → Gaziantep bölgesi için 88.5 Hz değerini seç → MENU ile kaydet → EXIT."
+      },
+      {
+        "step": 6,
+        "title": "Bağlantıyı Test Et",
+        "description": "PTT (konuşma) tuşuna bas. Ekrandaki frekansın 145.075 değerine döndüğünü gözlemle. Bu, röle bağlantı mimarisinin cihaza başarıyla kodlandığını doğrular."
+      }
+    ]
+  }
+}

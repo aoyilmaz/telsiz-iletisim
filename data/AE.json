@@ -1,0 +1,1 @@
+{"relays":[{"id":"hh-A62A-25264","name":"A62A Sharjah","region":"BAE - Sharjah","type":"digital","band":"VHF","protocol":"DMR","listen_freq":145.6875,"send_freq":144.6875,"offset":-1.0,"ctcss":null,"lat":25.26396,"lon":55.57669,"operator":"A62A","notes":"Network: BrandMeister\nMMDVM. TG:422,427,430\nSee https://brandmeister.network/?page=repeater&id=430001"}]}

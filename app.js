@@ -269,47 +269,6 @@ function buildCityDropdown(relays) {
   });
 }
 
-// ── RepeaterBook dönüştürücü ─────────────────────────────────────────────────
-
-function convertRB(entry, countryLabel) {
-  var txFreq = parseFloat(entry.Frequency);
-  var rxFreq = parseFloat(entry.Input_Freq);
-  var lat    = parseFloat(entry.Latitude);
-  var lon    = parseFloat(entry.Longitude);
-  if (isNaN(txFreq) || isNaN(rxFreq) || isNaN(lat) || isNaN(lon)) return null;
-  if (lat === 0 && lon === 0) return null;
-
-  var band   = (txFreq >= 430 && txFreq < 450) ? 'UHF' : 'VHF';
-  var type   = 'analog';
-  var proto  = null;
-  if (entry.DMR === 'Yes' || entry.DMR === '1')          { type = 'digital'; proto = 'DMR';    }
-  else if (entry.dstar === 'Yes' || entry.dstar === '1') { type = 'digital'; proto = 'D-STAR'; }
-  else if (entry.Fusion === 'Yes' || entry.YSF === 'Yes'){ type = 'digital'; proto = 'C4FM';   }
-  else if (entry.NXDN === 'Yes' || entry.NXDN === '1')   { type = 'digital'; proto = 'NXDN';   }
-
-  var name = '';
-  if (entry.Callsign) name += entry.Callsign;
-  if (entry.City)     name += (name ? ' ' : '') + entry.City;
-  if (!name)          name = txFreq.toFixed(4) + ' MHz';
-
-  return {
-    id:          'rb-' + (entry.Callsign || '').replace(/[^a-z0-9]/gi, '') + '-' + Math.round(lat * 1000),
-    name:        name,
-    region:      countryLabel + (entry.City ? ' - ' + entry.City : ''),
-    type:        type,
-    band:        band,
-    protocol:    proto,
-    listen_freq: txFreq,
-    send_freq:   rxFreq,
-    offset:      parseFloat((rxFreq - txFreq).toFixed(3)),
-    ctcss:       entry.PL ? parseFloat(entry.PL) : null,
-    lat:         lat,
-    lon:         lon,
-    operator:    entry.Callsign || null,
-    notes:       entry.Notes || null,
-  };
-}
-
 // ── Ülke verisi yükle ────────────────────────────────────────────────────────
 
 var CACHE_PFX = 'rb_';
@@ -350,22 +309,18 @@ function loadCountryData(code, label, rbName) {
   if (cached) { loadRelays(cached); return; }
 
   setLoading(true);
-  var url = 'https://www.repeaterbook.com/row_repeaters/export.php?country='
-          + encodeURIComponent(rbName) + '&band=&status_id=1&format=json';
-
-  fetch(url)
+  fetch('./data/' + code + '.json')
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(data) {
-      if (!data.results || !data.results.length) throw new Error('Sonuç bulunamadı');
-      var relays = data.results.map(function(e) { return convertRB(e, label); }).filter(Boolean);
-      setCached(code, relays);
-      loadRelays(relays);
+    .then(function(d) {
+      if (!d.relays || !d.relays.length) throw new Error('Röle bulunamadı');
+      setCached(code, d.relays);
+      loadRelays(d.relays);
       setLoading(false);
     })
     .catch(function(err) {
       setLoading(false);
       showListError('Veri yüklenemedi: ' + err.message
-        + '<br><small>RepeaterBook CORS kısıtlaması olabilir.</small>');
+        + '<br><small>fetch_world_data.py betiğini çalıştırıp data/ klasörünü güncelleyin.</small>');
     });
 }
 
@@ -529,31 +484,6 @@ function renderTraining(data) {
   document.getElementById('training-body').innerHTML = html;
 }
 
-// ── Ülke seçici ──────────────────────────────────────────────────────────────
-
-function buildCountrySelector(countriesData) {
-  var sel = document.getElementById('select-country');
-  countriesData.regions.forEach(function(region) {
-    var grp = document.createElement('optgroup');
-    grp.label = region.name;
-    region.countries.forEach(function(c) {
-      var opt = document.createElement('option');
-      opt.value         = c.code;
-      opt.dataset.label = c.label;
-      opt.dataset.rb    = c.rb;
-      opt.textContent   = c.label;
-      grp.appendChild(opt);
-    });
-    sel.appendChild(grp);
-  });
-
-  sel.addEventListener('change', function() {
-    var opt = this.options[this.selectedIndex];
-    urlParsed = true; // URL paylaşımını yeni ülke yüklemesinde atla
-    loadCountryData(opt.value, opt.dataset.label || opt.textContent, opt.dataset.rb);
-    document.getElementById('select-city').innerHTML = '<option value="">Tüm Şehirler</option>';
-  });
-}
 
 // ── Ana başlatma ─────────────────────────────────────────────────────────────
 
@@ -571,11 +501,13 @@ function init() {
   // Türkiye verisi
   loadCountryData('TR', 'Türkiye', null);
 
-  // Ülke listesi
-  fetch('./countries.json')
-    .then(function(r) { return r.json(); })
-    .then(buildCountrySelector)
-    .catch(function() {});
+  // Ülke seçici
+  document.getElementById('select-country').addEventListener('change', function() {
+    var opt = this.options[this.selectedIndex];
+    urlParsed = true;
+    loadCountryData(opt.value, opt.dataset.label || opt.textContent, opt.dataset.rb);
+    document.getElementById('select-city').innerHTML = '<option value="">Tüm Şehirler</option>';
+  });
 
   // Filtre butonları
   document.querySelectorAll('.filter-btn').forEach(function(btn) {

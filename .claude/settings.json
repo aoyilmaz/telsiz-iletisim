@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:trac.org.tr)",
+      "WebFetch(domain:www.repeaterbook.com)",
+      "WebFetch(domain:radioid.net)",
+      "WebFetch(domain:www.radioid.net)",
+      "WebFetch(domain:aprs.fi)",
+      "WebFetch(domain:api.aprs.fi)",
+      "WebFetch(domain:nominatim.openstreetmap.org)",
+      "Bash(python geocode.py)",
+      "Bash(python geocode2.py)",
+      "Bash(python geocode_fix.py)",
+      "Bash(del geocode.py geocode2.py geocode_fix.py)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(python -c \"import requests; print\\('requests OK:', requests.__version__\\)\")",
+      "Bash(python fetch_world_data.py)",
+      "Bash(python -c \"import requests; r = requests.get\\('https://www.repeaterbook.com/row_repeaters/export.php?country=Germany&status_id=1&format=json', headers={'User-Agent':'Mozilla/5.0'}, timeout=20\\); print\\(r.status_code, r.text[:300]\\)\")",
+      "Bash(python -c ' *)"
+    ]
+  }
+}

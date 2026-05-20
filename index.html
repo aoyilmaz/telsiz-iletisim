@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1a1a2e">
-  <meta name="description" content="Türkiye amatör telsiz röle istasyonları — çevrimdışı çalışan afet iletişim haritası">
+  <meta name="description" content="Türkiye ve dünya amatör telsiz röle istasyonları — çevrimdışı afet iletişim haritası">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="AfetTelsiz">
 
@@ -13,9 +13,9 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 
-  <!-- LeafletJS CSS — integrity hash olmadan, CDN güvenilirliği için -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,9 +27,9 @@
       <h1>Afet İletişim Haritası</h1>
     </div>
     <div class="header-right">
-      <button id="btn-locate"   class="btn btn-locate"  title="Konumunuza yakın röleleri göster">📍 Konumum</button>
+      <button id="btn-locate"   class="btn btn-locate"    title="Konumunuza yakın röleleri göster">📍 Konumum</button>
       <button id="btn-training" class="btn btn-secondary">📻 Rehber</button>
-      <button id="btn-offline"  class="btn btn-primary" title="Çevrimdışı kullanım için harita parçalarını kaydet">💾 Kaydet</button>
+      <button id="btn-offline"  class="btn btn-primary"   title="Çevrimdışı kullanım için harita parçalarını kaydet">💾 Kaydet</button>
     </div>
   </header>
 
@@ -39,21 +39,54 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <h2>Röle İstasyonları</h2>
+
+        <!-- Ülke / Şehir seçici -->
+        <div class="loc-selectors">
+          <select id="select-country" class="loc-select">
+            <option value="TR" data-label="Türkiye" data-rb="">🇹🇷 Türkiye</option>
+          </select>
+          <select id="select-city" class="loc-select">
+            <option value="">Tüm Şehirler</option>
+          </select>
+        </div>
+
+        <!-- Arama -->
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="search-input" placeholder="İstasyon veya bölge ara…" autocomplete="off">
+        </div>
+
+        <!-- Filtre -->
         <div class="filter-group">
           <button class="filter-btn active" data-filter="all">Tümü</button>
           <button class="filter-btn"        data-filter="analog">Analog</button>
           <button class="filter-btn"        data-filter="digital">Dijital</button>
         </div>
+
+        <!-- Yarıçap (konum alındıktan sonra görünür) -->
+        <div class="radius-filter" id="radius-filter" style="display:none">
+          <div class="radius-row">
+            <span class="radius-lbl">Yarıçap: <strong id="radius-label">50 km</strong></span>
+            <button id="btn-radius-reset" class="btn-link">Tümü göster</button>
+          </div>
+          <input type="range" id="radius-slider" min="10" max="500" step="10" value="50" class="radius-range">
+        </div>
       </div>
+
       <div class="relay-list" id="relay-list"></div>
     </aside>
 
     <main class="map-container">
       <div id="map"></div>
+
+      <!-- Bağlantı durumu -->
       <div class="offline-status">
         <span class="status-dot" id="status-dot"></span>
         <span id="status-text">Yükleniyor…</span>
       </div>
+
+      <!-- Mobil: liste aç/kapa -->
+      <button id="btn-mobile-list" class="mobile-list-btn" title="Röle listesi">☰</button>
     </main>
 
   </div>
@@ -69,9 +102,12 @@
     </div>
   </div>
 
+  <!-- Toast bildirimi -->
+  <div id="toast" class="toast"></div>
 
-  <!-- LeafletJS -->
+  <!-- LeafletJS + MarkerCluster -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <!-- Uygulama -->
   <script src="app.js"></script>

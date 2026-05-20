@@ -1,0 +1,77 @@
+{
+  "regions": [
+    {
+      "name": "Avrupa",
+      "countries": [
+        {"code":"DE","label":"Almanya","rb":"Germany"},
+        {"code":"AT","label":"Avusturya","rb":"Austria"},
+        {"code":"BE","label":"Belçika","rb":"Belgium"},
+        {"code":"BG","label":"Bulgaristan","rb":"Bulgaria"},
+        {"code":"CZ","label":"Çek Cumhuriyeti","rb":"Czech Republic"},
+        {"code":"DK","label":"Danimarka","rb":"Denmark"},
+        {"code":"EE","label":"Estonya","rb":"Estonia"},
+        {"code":"FI","label":"Finlandiya","rb":"Finland"},
+        {"code":"FR","label":"Fransa","rb":"France"},
+        {"code":"NL","label":"Hollanda","rb":"Netherlands"},
+        {"code":"HR","label":"Hırvatistan","rb":"Croatia"},
+        {"code":"GB","label":"İngiltere","rb":"United Kingdom"},
+        {"code":"IE","label":"İrlanda","rb":"Ireland"},
+        {"code":"ES","label":"İspanya","rb":"Spain"},
+        {"code":"SE","label":"İsveç","rb":"Sweden"},
+        {"code":"CH","label":"İsviçre","rb":"Switzerland"},
+        {"code":"IT","label":"İtalya","rb":"Italy"},
+        {"code":"IS","label":"İzlanda","rb":"Iceland"},
+        {"code":"LV","label":"Letonya","rb":"Latvia"},
+        {"code":"LT","label":"Litvanya","rb":"Lithuania"},
+        {"code":"HU","label":"Macaristan","rb":"Hungary"},
+        {"code":"MK","label":"Kuzey Makedonya","rb":"North Macedonia"},
+        {"code":"NO","label":"Norveç","rb":"Norway"},
+        {"code":"PL","label":"Polonya","rb":"Poland"},
+        {"code":"PT","label":"Portekiz","rb":"Portugal"},
+        {"code":"RO","label":"Romanya","rb":"Romania"},
+        {"code":"RS","label":"Sırbistan","rb":"Serbia"},
+        {"code":"SK","label":"Slovakya","rb":"Slovakia"},
+        {"code":"SI","label":"Slovenya","rb":"Slovenia"},
+        {"code":"GR","label":"Yunanistan","rb":"Greece"}
+      ]
+    },
+    {
+      "name": "Amerika",
+      "countries": [
+        {"code":"US","label":"ABD","rb":"United States"},
+        {"code":"CA","label":"Kanada","rb":"Canada"},
+        {"code":"MX","label":"Meksika","rb":"Mexico"},
+        {"code":"BR","label":"Brezilya","rb":"Brazil"},
+        {"code":"AR","label":"Arjantin","rb":"Argentina"},
+        {"code":"CL","label":"Şili","rb":"Chile"},
+        {"code":"CO","label":"Kolombiya","rb":"Colombia"}
+      ]
+    },
+    {
+      "name": "Asya-Pasifik",
+      "countries": [
+        {"code":"AU","label":"Avustralya","rb":"Australia"},
+        {"code":"NZ","label":"Yeni Zelanda","rb":"New Zealand"},
+        {"code":"JP","label":"Japonya","rb":"Japan"},
+        {"code":"KR","label":"Güney Kore","rb":"South Korea"},
+        {"code":"IN","label":"Hindistan","rb":"India"},
+        {"code":"SG","label":"Singapur","rb":"Singapore"},
+        {"code":"MY","label":"Malezya","rb":"Malaysia"},
+        {"code":"TH","label":"Tayland","rb":"Thailand"},
+        {"code":"PH","label":"Filipinler","rb":"Philippines"},
+        {"code":"ID","label":"Endonezya","rb":"Indonesia"},
+        {"code":"HK","label":"Hong Kong","rb":"Hong Kong"}
+      ]
+    },
+    {
+      "name": "Orta Doğu & Afrika",
+      "countries": [
+        {"code":"IL","label":"İsrail","rb":"Israel"},
+        {"code":"JO","label":"Ürdün","rb":"Jordan"},
+        {"code":"AE","label":"BAE","rb":"United Arab Emirates"},
+        {"code":"ZA","label":"Güney Afrika","rb":"South Africa"},
+        {"code":"EG","label":"Mısır","rb":"Egypt"}
+      ]
+    }
+  ]
+}

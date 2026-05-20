@@ -1,4 +1,4 @@
-const CACHE_APP  = 'afet-app-v2';
+const CACHE_APP  = 'afet-app-v3';
 const CACHE_TILE = 'afet-tile-v1';
 
 const APP_FILES = [
@@ -6,6 +6,7 @@ const APP_FILES = [
   './style.css',
   './app.js',
   './data.json',
+  './countries.json',
   './manifest.json',
   './icons/icon.svg',
 ];

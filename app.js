@@ -12,8 +12,10 @@ var TYPE_CFG = {
 };
 
 var map;
-var allRelays = [];
-var markers   = {};
+var allRelays  = [];
+var markers    = {};
+var userMarker = null;
+var userCircle = null;
 
 // ── Yardımcı fonksiyonlar ────────────────────────────────────────────────────
 
@@ -174,6 +176,112 @@ function applyFilter(filter) {
   }
 }
 
+// ── Kullanıcı konumu ─────────────────────────────────────────────────────────
+
+function haversine(lat1, lon1, lat2, lon2) {
+  var R    = 6371;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLon = (lon2 - lon1) * Math.PI / 180;
+  var a    = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+           + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180)
+           * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function showNearby(lat, lon, accuracy) {
+  // Kullanıcı konumu işaretçisi
+  if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
+
+  var userIcon = L.divIcon({
+    className: '',
+    html: '<div class="user-dot"></div>',
+    iconSize:   [20, 20],
+    iconAnchor: [10, 10],
+  });
+  userMarker = L.marker([lat, lon], { icon: userIcon, zIndexOffset: 1000 })
+    .bindPopup('<strong>Konumunuz</strong>')
+    .addTo(map);
+  userCircle = L.circle([lat, lon], {
+    radius:      Math.min(accuracy || 500, 5000),
+    color:       '#4a90d9',
+    fillColor:   '#4a90d9',
+    fillOpacity: 0.08,
+    weight:      1,
+  }).addTo(map);
+
+  // Her rölenin mesafesini hesapla ve sidebar öğesine yaz
+  var withDist = allRelays.map(function(r) {
+    return { relay: r, dist: haversine(lat, lon, r.lat, r.lon) };
+  });
+  withDist.sort(function(a, b) { return a.dist - b.dist; });
+
+  var listEl  = document.getElementById('relay-list');
+  var itemMap = {};
+  listEl.querySelectorAll('.relay-item').forEach(function(el) {
+    itemMap[el.dataset.id] = el;
+  });
+
+  withDist.forEach(function(wd) {
+    var el = itemMap[wd.relay.id];
+    if (!el) return;
+
+    var distText = wd.dist < 10
+      ? wd.dist.toFixed(1) + ' km'
+      : Math.round(wd.dist) + ' km';
+
+    var badge = el.querySelector('.dist-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'dist-badge';
+      el.querySelector('.relay-item-sub').appendChild(badge);
+    }
+    badge.textContent = distText;
+    el.classList.toggle('nearby', wd.dist <= 50);
+
+    listEl.appendChild(el); // mesafeye göre yeniden sırala
+  });
+
+  // Haritayı kullanıcı + en yakın 5 röleye sığdır
+  var bounds = [[lat, lon]];
+  for (var i = 0; i < Math.min(5, withDist.length); i++) {
+    bounds.push([withDist[i].relay.lat, withDist[i].relay.lon]);
+  }
+  map.flyToBounds(L.latLngBounds(bounds).pad(0.3), { duration: 1.5 });
+
+  // En yakın rölenin popup'ını aç
+  var nearest = withDist[0];
+  if (nearest) {
+    setTimeout(function() {
+      markers[nearest.relay.id] && markers[nearest.relay.id].openPopup();
+    }, 1800);
+  }
+}
+
+function locateUser() {
+  if (!navigator.geolocation) {
+    alert('Tarayıcınız konum servisini desteklemiyor.');
+    return;
+  }
+  var btn = document.getElementById('btn-locate');
+  btn.disabled    = true;
+  btn.textContent = '📍 Alınıyor…';
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      btn.disabled    = false;
+      btn.textContent = '📍 Konumum';
+      showNearby(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
+    },
+    function(err) {
+      btn.disabled    = false;
+      btn.textContent = '📍 Konumum';
+      var msgs = { 1: 'Konum izni reddedildi.', 2: 'Konum alınamadı.', 3: 'Konum isteği zaman aşımına uğradı.' };
+      alert(msgs[err.code] || 'Konum hatası.');
+    },
+    { timeout: 12000, maximumAge: 60000, enableHighAccuracy: false }
+  );
+}
+
 // ── Çevrimdışı tile önbellekleme (SW tabanlı) ────────────────────────────────
 // OpenStreetMap toplu (bulk) tile indirmeyi engellemektedir.
 // Tile'lar, Service Worker aracılığıyla siz haritayı gezinirken
@@ -279,6 +387,9 @@ function init() {
   modal.addEventListener('click', function(e) {
     if (e.target === modal) modal.classList.remove('active');
   });
+
+  // Konum butonu
+  document.getElementById('btn-locate').addEventListener('click', locateUser);
 
   // Offline kaydet butonu
   document.getElementById('btn-offline').addEventListener('click', showOfflineInfo);

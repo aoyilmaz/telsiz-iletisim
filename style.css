@@ -72,6 +72,7 @@ body {
 .btn-primary   { background: var(--primary);   color: #fff; }
 .btn-secondary { background: var(--secondary); color: #fff; }
 .btn-danger    { background: #b03030;           color: #fff; }
+.btn-locate    { background: #1a5c9c;           color: #fff; }
 .btn:disabled  { opacity: .4; cursor: not-allowed; }
 
 /* ── Body layout ──
@@ -130,7 +131,8 @@ body {
   border-left: 3px solid transparent;
   transition: background .15s, transform .15s;
 }
-.relay-item:hover { background: #1c2d4a; transform: translateX(2px); }
+.relay-item:hover  { background: #1c2d4a; transform: translateX(2px); }
+.relay-item.nearby { background: #0d2240; border-right: 2px solid #4a90d9; }
 
 .relay-item.vhf  { border-left-color: var(--vhf);  }
 .relay-item.uhf  { border-left-color: var(--uhf);  }
@@ -140,7 +142,8 @@ body {
 
 .relay-item-header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
 .relay-item-name   { font-size: 13px; font-weight: 600; }
-.relay-item-sub    { font-size: 11px; color: var(--muted); }
+.relay-item-sub    { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.dist-badge        { font-size: 10px; font-weight: 700; color: #4a90d9; background: rgba(74,144,217,.15); padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
 
 .relay-badge {
   display: inline-block;
@@ -282,6 +285,20 @@ body {
 .progress-bar  { height: 5px; background: rgba(255,255,255,.1); border-radius: 3px; margin-bottom: 9px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width .3s; width: 0; }
 #progress-text { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+/* ── Kullanıcı konum işaretçisi ── */
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74,144,217,.6); }
+  70%  { box-shadow: 0 0 0 10px rgba(74,144,217,0); }
+  100% { box-shadow: 0 0 0 0 rgba(74,144,217,0); }
+}
+.user-dot {
+  width: 14px; height: 14px;
+  background: #4a90d9;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  animation: pulse 1.8s infinite;
+}
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }

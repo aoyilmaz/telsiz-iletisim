@@ -201,6 +201,34 @@ def main():
 
     print(f"\nTamamlandı: {ok}/{len(targets)} ülkede veri var.")
     print(f"(Eşleştirilemeyen giriş: {skipped})")
+
+    # Tüm mevcut country dosyalarından world.json üret
+    print("\nDünya birleşik dosyası oluşturuluyor…")
+    world = []
+    tr_path = os.path.join("data", "TR.json")
+    if os.path.exists(tr_path):
+        with open(tr_path, encoding="utf-8") as f:
+            d = json.load(f)
+        for r in d.get("relays", []):
+            r["countryCode"] = "TR"
+            world.append(r)
+    for fname in sorted(os.listdir("data")):
+        if not fname.endswith(".json"):
+            continue
+        code2 = fname[:-5]
+        if code2 in ("TR", "world"):
+            continue
+        with open(os.path.join("data", fname), encoding="utf-8") as f:
+            d = json.load(f)
+        for r in d.get("relays", []):
+            r["countryCode"] = code2
+            world.append(r)
+    world_path = os.path.join("data", "world.json")
+    with open(world_path, "w", encoding="utf-8") as f:
+        json.dump({"relays": world}, f, ensure_ascii=False, separators=(",", ":"))
+    size_kb = os.path.getsize(world_path) // 1024
+    print(f"data/world.json: {len(world)} röle, {size_kb} KB")
+
     print("\nGitHub'a göndermek için:")
     print("  git add data/ && git commit -m 'Dünya röle verisi güncellendi'")
 

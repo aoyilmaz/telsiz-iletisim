@@ -20,7 +20,8 @@ var userCircle   = null;
 var nearestLines = [];
 var urlParsed    = false;
 
-var activeFilters = { type: 'all', search: '', radius: 0 };
+var activeFilters = { type: 'all', search: '', radius: 0, country: '' };
+var distanceMap   = {};
 
 // ── Yardımcı ────────────────────────────────────────────────────────────────
 
@@ -130,8 +131,10 @@ function buildSidebarItem(relay) {
   var cssKey = typeCssClass(relay);
   var tlabel = typeLabel(relay);
 
+  var dist = distanceMap[relay.id];
+
   var el = document.createElement('div');
-  el.className       = 'relay-item ' + cssKey;
+  el.className       = 'relay-item ' + cssKey + (dist !== undefined && dist <= 50 ? ' nearby' : '');
   el.dataset.id      = relay.id;
   el.dataset.type    = relay.type;
   el.dataset.search  = (relay.name + ' ' + relay.region).toLowerCase();
@@ -143,6 +146,7 @@ function buildSidebarItem(relay) {
     + '</div>'
     + '<div class="relay-item-sub">'
     +   fmtFreq(relay.listen_freq) + ' MHz &middot; ' + relay.region
+    +   (dist !== undefined ? ' &middot; <span class="dist-badge">' + fmtDist(dist) + '</span>' : '')
     + '</div>';
 
   el.addEventListener('click', function() {
@@ -159,42 +163,76 @@ function buildSidebarItem(relay) {
 // ── Filtre (birleşik) ────────────────────────────────────────────────────────
 
 function applyFilters() {
-  markerCluster.clearLayers();
   var userPos = userMarker ? userMarker.getLatLng() : null;
+  var q       = activeFilters.search;
   var toAdd   = [];
-  var items   = document.querySelectorAll('.relay-item');
+  var visible = [];
 
-  for (var i = 0; i < items.length; i++) {
-    var el    = items[i];
-    var relay = null;
-    for (var j = 0; j < allRelays.length; j++) {
-      if (allRelays[j].id === el.dataset.id) { relay = allRelays[j]; break; }
+  for (var i = 0; i < allRelays.length; i++) {
+    var relay = allRelays[i];
+
+    var passCountry = !activeFilters.country || relay.countryCode === activeFilters.country;
+    var passType    = activeFilters.type === 'all' || relay.type === activeFilters.type;
+    var passSearch  = !q || (relay.name + ' ' + relay.region).toLowerCase().indexOf(q) !== -1;
+    var passDist    = !activeFilters.radius || !userPos
+                    || haversine(userPos.lat, userPos.lng, relay.lat, relay.lon) <= activeFilters.radius;
+
+    if (passCountry && passType && passSearch && passDist) {
+      if (markers[relay.id]) toAdd.push(markers[relay.id]);
+      visible.push(relay);
     }
-    if (!relay) continue;
-
-    var passType   = activeFilters.type === 'all' || relay.type === activeFilters.type;
-    var passSearch = !activeFilters.search
-                  || (el.dataset.search || '').indexOf(activeFilters.search) !== -1;
-    var passDist   = !activeFilters.radius || !userPos
-                  || haversine(userPos.lat, userPos.lng, relay.lat, relay.lon) <= activeFilters.radius;
-
-    var show = passType && passSearch && passDist;
-    el.style.display = show ? '' : 'none';
-    if (show && markers[relay.id]) toAdd.push(markers[relay.id]);
   }
 
+  markerCluster.clearLayers();
   markerCluster.addLayers(toAdd);
+  renderSidebar(visible);
 }
 
-// ── Röleleri harita + listeye yükle ─────────────────────────────────────────
+// ── Sidebar içerik oluştur ───────────────────────────────────────────────────
 
-function loadRelays(relays) {
+var MAX_SIDEBAR = 400;
+
+function renderSidebar(relays) {
+  var listEl = document.getElementById('relay-list');
+
+  // Filtre yoksa sadece mesaj göster (5000+ DOM öğesi oluşturma)
+  var noFilter = !activeFilters.country && !activeFilters.search
+              && !activeFilters.radius && activeFilters.type === 'all';
+  if (noFilter) {
+    listEl.innerHTML = '<p class="info-msg">Haritada kümeye tıklayın veya listeden ülke seçin.</p>';
+    buildCityDropdown([]);
+    return;
+  }
+
+  // Mesafeye göre sırala (konum alındıysa)
+  if (Object.keys(distanceMap).length > 0) {
+    relays = relays.slice().sort(function(a, b) {
+      var da = distanceMap[a.id] !== undefined ? distanceMap[a.id] : Infinity;
+      var db = distanceMap[b.id] !== undefined ? distanceMap[b.id] : Infinity;
+      return da - db;
+    });
+  }
+
+  listEl.innerHTML = '';
+  var shown = relays.slice(0, MAX_SIDEBAR);
+  for (var i = 0; i < shown.length; i++) {
+    listEl.appendChild(buildSidebarItem(shown[i]));
+  }
+  if (relays.length > MAX_SIDEBAR) {
+    var p = document.createElement('p');
+    p.className = 'info-msg';
+    p.textContent = '+ ' + (relays.length - MAX_SIDEBAR) + ' daha var. Filtre ile daraltın.';
+    listEl.appendChild(p);
+  }
+  buildCityDropdown(relays);
+}
+
+// ── Tüm röleler: haritaya yükle (sidebar yok) ───────────────────────────────
+
+function initAllRelays(relays) {
   markerCluster.clearLayers();
   Object.keys(markers).forEach(function(id) { delete markers[id]; });
   allRelays = relays;
-
-  var listEl = document.getElementById('relay-list');
-  listEl.innerHTML = '';
 
   var toAdd = [];
   for (var i = 0; i < allRelays.length; i++) {
@@ -207,7 +245,6 @@ function loadRelays(relays) {
     });
     m.bindPopup(buildPopup(relay), { maxWidth: 300 });
 
-    // Popup event delegation: kopyala + paylaş
     m.on('popupopen', function(e) {
       var pEl = e.popup.getElement();
       if (!pEl) return;
@@ -224,28 +261,39 @@ function loadRelays(relays) {
     toAdd.push(m);
   }
   markerCluster.addLayers(toAdd);
+  applyFilters(); // initial render
 
-  if (toAdd.length > 0) {
-    map.fitBounds(markerCluster.getBounds().pad(0.1));
-  }
+  if (!urlParsed) { urlParsed = true; parseShareUrl(); }
+}
 
-  for (var j = 0; j < allRelays.length; j++) {
-    listEl.appendChild(buildSidebarItem(allRelays[j]));
-  }
+// ── Ülke filtresi uygula + haritada uç ──────────────────────────────────────
 
-  buildCityDropdown(allRelays);
+function setCountryFilter(code) {
+  activeFilters.country = code;
+  activeFilters.type    = 'all';
+  activeFilters.search  = '';
+  distanceMap = {};
 
-  // Filtreleri sıfırla
-  activeFilters.type   = 'all';
-  activeFilters.search = '';
-  activeFilters.radius = 0;
   var searchEl = document.getElementById('search-input');
   if (searchEl) searchEl.value = '';
   document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
   var allBtn = document.querySelector('.filter-btn[data-filter="all"]');
   if (allBtn) allBtn.classList.add('active');
+  document.getElementById('select-city').innerHTML = '<option value="">Tüm Şehirler</option>';
+  document.getElementById('radius-filter').style.display = 'none';
+  activeFilters.radius = 0;
 
-  if (!urlParsed) { urlParsed = true; parseShareUrl(); }
+  applyFilters();
+
+  if (code) {
+    var cb = allRelays.filter(function(r) { return r.countryCode === code; });
+    if (cb.length > 0) {
+      var bounds = L.latLngBounds(cb.map(function(r) { return [r.lat, r.lon]; }));
+      map.flyToBounds(bounds.pad(0.15), { duration: 1.2, maxZoom: 9 });
+    }
+  } else {
+    map.flyTo([20, 0], 2, { duration: 1.5 });
+  }
 }
 
 // ── Şehir dropdown ───────────────────────────────────────────────────────────
@@ -267,65 +315,6 @@ function buildCityDropdown(relays) {
     opt.textContent = c;
     sel.appendChild(opt);
   });
-}
-
-// ── Ülke verisi yükle ────────────────────────────────────────────────────────
-
-var CACHE_PFX = 'rb_';
-var CACHE_TTL = 3600 * 1000;
-
-function getCached(key) {
-  try {
-    var s = localStorage.getItem(CACHE_PFX + key);
-    if (!s) return null;
-    var o = JSON.parse(s);
-    if (Date.now() - o.ts > CACHE_TTL) { localStorage.removeItem(CACHE_PFX + key); return null; }
-    return o.data;
-  } catch(e) { return null; }
-}
-
-function setCached(key, data) {
-  try { localStorage.setItem(CACHE_PFX + key, JSON.stringify({ ts: Date.now(), data: data })); } catch(e) {}
-}
-
-function loadCountryData(code, label, rbName) {
-  if (code === 'TR') {
-    setLoading(true);
-    fetch('./data/TR.json')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        loadRelays(d.relays);
-        renderTraining(d.baofeng_programming);
-        setLoading(false);
-      })
-      .catch(function(err) {
-        setLoading(false);
-        showListError('data/TR.json yüklenemedi: ' + err.message);
-      });
-    return;
-  }
-
-  var cached = getCached(code);
-  if (cached) { loadRelays(cached); return; }
-
-  setLoading(true);
-  fetch('./data/' + code + '.json')
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(d) {
-      if (!d.relays || !d.relays.length) throw new Error('Röle bulunamadı');
-      setCached(code, d.relays);
-      loadRelays(d.relays);
-      setLoading(false);
-    })
-    .catch(function(err) {
-      setLoading(false);
-      showListError('Veri yüklenemedi: ' + err.message
-        + '<br><small>fetch_world_data.py betiğini çalıştırıp data/ klasörünü güncelleyin.</small>');
-    });
-}
-
-function setLoading(yes) {
-  if (yes) document.getElementById('relay-list').innerHTML = '<p class="info-msg">Yükleniyor…</p>';
 }
 
 function showListError(html) {
@@ -376,24 +365,9 @@ function showNearby(lat, lon, accuracy) {
     return { relay: r, dist: haversine(lat, lon, r.lat, r.lon) };
   }).sort(function(a, b) { return a.dist - b.dist; });
 
-  // Sidebar: mesafeye göre sırala
-  var listEl  = document.getElementById('relay-list');
-  var itemMap = {};
-  listEl.querySelectorAll('.relay-item').forEach(function(el) { itemMap[el.dataset.id] = el; });
-
-  withDist.forEach(function(wd) {
-    var el = itemMap[wd.relay.id];
-    if (!el) return;
-    var badge = el.querySelector('.dist-badge');
-    if (!badge) {
-      badge = document.createElement('span');
-      badge.className = 'dist-badge';
-      el.querySelector('.relay-item-sub').appendChild(badge);
-    }
-    badge.textContent = fmtDist(wd.dist);
-    el.classList.toggle('nearby', wd.dist <= 50);
-    listEl.appendChild(el);
-  });
+  // distanceMap güncelle → renderSidebar bu sıralamayı kullanacak
+  distanceMap = {};
+  withDist.forEach(function(wd) { distanceMap[wd.relay.id] = wd.dist; });
 
   // En yakın 3 röleye kesik çizgi
   for (var i = 0; i < Math.min(3, withDist.length); i++) {
@@ -492,21 +466,46 @@ function init() {
   map.setView([39.0, 35.0], 6);
   L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
 
-  // Marker clustering (fallback: basit layer group)
+  // Marker clustering
   markerCluster = (typeof L.markerClusterGroup === 'function')
-    ? L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 50, spiderfyOnMaxZoom: true })
+    ? L.markerClusterGroup({ showCoverageOnHover: false, maxClusterRadius: 60, spiderfyOnMaxZoom: true })
     : L.layerGroup();
   markerCluster.addTo(map);
 
-  // Türkiye verisi
-  loadCountryData('TR', 'Türkiye', null);
+  // Dünya verisi yükle (world.json); hata durumunda yalnızca TR
+  var listEl = document.getElementById('relay-list');
+  listEl.innerHTML = '<p class="info-msg">Veriler yükleniyor…</p>';
+  map.setView([20, 0], 2);
+
+  fetch('./data/world.json')
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d) {
+      initAllRelays(d.relays);
+    })
+    .catch(function() {
+      // Fallback: yalnızca Türkiye
+      fetch('./data/TR.json')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          d.relays.forEach(function(r) { r.countryCode = 'TR'; });
+          initAllRelays(d.relays);
+          setCountryFilter('TR');
+        })
+        .catch(function(e) {
+          listEl.innerHTML = '<p class="error-msg">Veri yüklenemedi: ' + e.message + '</p>';
+        });
+    });
+
+  // Eğitim rehberi (TR.json'dan)
+  fetch('./data/TR.json')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { renderTraining(d.baofeng_programming); })
+    .catch(function() {});
 
   // Ülke seçici
   document.getElementById('select-country').addEventListener('change', function() {
-    var opt = this.options[this.selectedIndex];
     urlParsed = true;
-    loadCountryData(opt.value, opt.dataset.label || opt.textContent, opt.dataset.rb);
-    document.getElementById('select-city').innerHTML = '<option value="">Tüm Şehirler</option>';
+    setCountryFilter(this.value);
   });
 
   // Filtre butonları

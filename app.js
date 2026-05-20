@@ -291,7 +291,7 @@ function setCached(key, data) {
 function loadCountryData(code, label, rbName) {
   if (code === 'TR') {
     setLoading(true);
-    fetch('./data.json')
+    fetch('./data/TR.json')
       .then(function(r) { return r.json(); })
       .then(function(d) {
         loadRelays(d.relays);
@@ -300,7 +300,7 @@ function loadCountryData(code, label, rbName) {
       })
       .catch(function(err) {
         setLoading(false);
-        showListError('data.json yüklenemedi: ' + err.message);
+        showListError('data/TR.json yüklenemedi: ' + err.message);
       });
     return;
   }

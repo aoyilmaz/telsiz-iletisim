@@ -533,6 +533,166 @@ var AFET_PROTOKOLU = {
   ]
 };
 
+// ── TYT TH-9800 ve CHIRP rehber verileri ─────────────────────────────────────
+
+var TYT_GUIDE = {
+  target_relay: 'Gaziantep UHF – 439.400 MHz / –7.600 / 88.5 Hz',
+  steps: [
+    { step: 1, title: 'VFO Modunu Aç',
+      description: 'Ana bant kadranını VFO konumuna getirin. Ekranda frekans rakamlarının değiştirmeye hazır olduğunu görün.' },
+    { step: 2, title: 'Frekansı Gir',
+      description: 'Dinleme frekansını tuşlayın. Gaziantep UHF için 439.400 değerini girin.' },
+    { step: 3, title: 'Menü 31 – Ton Modu',
+      description: 'Menü 31 (TONE M) adımından tonlama şeklini "CTCSS" olarak seçin. Squelch\'i açık tutacak alt sesi aktive eder.' },
+    { step: 4, title: 'Menü 30 – CTCSS Frekansı',
+      description: 'Menü 30 (TONE F) adımından 88.5 Hz değerini seçin. PTT\'ye basıldığında bu ton otomatik iletilir.' },
+    { step: 5, title: 'Çapraz Bant Tekrarlayıcı',
+      description: 'V+U modunu etkinleştirin. Cihaz, el telsizinden gelen UHF sinyali alıp 50 Watt ile VHF üzerinden röleye aktarır.' },
+  ]
+};
+
+var CHIRP_GUIDE = {
+  target_relay: 'Tüm Röle Hafıza Kanalları',
+  steps: [
+    { step: 1, title: 'Kabloyu Bağla',
+      description: 'K-Type USB programlama kablosunu telsizin mikrofon jakına ve bilgisayara takın. Windows sürücüyü otomatik yükler.' },
+    { step: 2, title: 'Radyodan İndir',
+      description: 'CHIRP\'te Radio → Download from Radio. Cihaz modelini seçin. Mevcut hafıza kanalları tablo halinde gösterilir.' },
+    { step: 3, title: 'Kanalları Düzenle',
+      description: 'Her satır bir kanal. Name (GZT-VHF), Frequency (145.675), Offset (–0.600), CTCSS Tone (88.5) alanlarını doldurun.' },
+    { step: 4, title: 'Radyoya Yükle',
+      description: 'Radio → Upload to Radio. Tüm kanallar saniyeler içinde EPROM\'a kalıcı yazılır. Artık hafıza modunda gezebilirsiniz.' },
+  ]
+};
+
+// ── Q Kodları verileri ────────────────────────────────────────────────────────
+
+var Q_KODLARI = [
+  { code: 'QRZ',  meaning: 'Kim çağırıyor?',       usage: '"QRZ?" → bu frekansı kim çağırıyor?' },
+  { code: 'QTH',  meaning: 'Bulunduğun yer',        usage: '"QTH İstanbul" → bulunduğum yer' },
+  { code: 'QSL',  meaning: 'Anlaşıldı / Alındı',    usage: '"QSL" → mesajı aldım, onaylıyorum' },
+  { code: 'QRM',  meaning: 'Yapay parazit',          usage: '"QRM var" → başka istasyon karışıyor' },
+  { code: 'QRN',  meaning: 'Atmosferik gürültü',     usage: '"QRN çok" → statik gürültü yüksek' },
+  { code: 'QSY',  meaning: 'Frekans değiştir',       usage: '"QSY 145.500" → şu frekansa geçelim' },
+  { code: 'QRB',  meaning: 'Aramızdaki mesafe',      usage: '"QRB?" → aremizdeki uzaklık kaç km?' },
+  { code: 'QSP',  meaning: 'İleteceğim (köprü)',     usage: '"QSP edeceğim" → mesajı aktaracağım' },
+  { code: 'QRT',  meaning: 'Yayını kesiyorum',       usage: '"QRT" → kapanıyorum, yayın bitiyor' },
+  { code: 'QRX',  meaning: 'Bekleyin',               usage: '"QRX 5 dk" → 5 dakika sonra döneceğim' },
+  { code: 'QRV',  meaning: 'Hazırım',                usage: '"QRV" → dinliyorum, iletişime hazırım' },
+  { code: 'QSO',  meaning: 'İletişim / Görüşme',     usage: '"QSO kuruyorum" → seninle iletişimdeyim' },
+  { code: 'QTR',  meaning: 'Saat kaç?',              usage: '"QTR?" → şu an yerel saat nedir?' },
+  { code: 'QRP',  meaning: 'Gücü azalt',             usage: '"QRP yapıyorum" → düşük güce geçiyorum' },
+  { code: 'QRO',  meaning: 'Gücü artır',             usage: '"QRO yap" → çıkış gücünü artır' },
+  { code: 'QAP',  meaning: 'Dinlemeye devam et',     usage: '"QAP" → frekansı dinlemeye devam edin' },
+  { code: '73',   meaning: 'İyi dilekler',            usage: '"73" → görüşmek üzere, esenlikler' },
+  { code: '88',   meaning: 'Sevgi ve öpücük',         usage: '"88" → aile ve yakın dostlara selamlama' },
+];
+
+// ── Mesh & Dijital teknoloji verileri ─────────────────────────────────────────
+
+var MESH_TEKNOLOJILER = [
+  {
+    name: 'Meshtastic', icon: '📡', color: '#2ecc71', band: 'LoRa 433 / 868 MHz',
+    desc: 'ESP32 tabanlı açık kaynak mesh ağı. GPS konum paylaşımı ve mesajlaşma. 10–40 km kapsama, internet gerektirmez.',
+    key: 'Python API: pip install meshtastic. ESP32 deep sleep ile pil ömrü optimize edilir.'
+  },
+  {
+    name: 'APRS', icon: '📦', color: '#f39c12', band: '144.800 MHz (TR/EU)',
+    desc: 'Otomatik Paket Raporlama. 1200 baud AFSK, AX.25 protokolü. GPS konum, hava ve telemetri verisi iletir.',
+    key: 'Direwolf ile ses kartından TNC olmadan çalıştırılabilir. aprs.fi üzerinden izlenir.'
+  },
+  {
+    name: 'Reticulum', icon: '🔐', color: '#3498db', band: 'LoRa / Wi-Fi / Seri',
+    desc: 'Kriptografik, sunucusuz ağ yığını. Kimlikler şifreleme anahtarıdır. DNS / DHCP gerektirmez.',
+    key: 'pip install rns. LoRa, Wi-Fi veya ses modem üzerinde; Sideband ile şifreli mesaj.'
+  },
+  {
+    name: 'JS8Call', icon: '📶', color: '#9b59b6', band: 'HF 7 – 14 MHz',
+    desc: 'Zayıf sinyal mesajlaşma modu. –24 dB SNR\'de veri aktarımı. İyonosfer yansımasıyla kıtalararası.',
+    key: 'pyjs8call API ile headless sunucu olarak çalıştırılabilir; Reticulum köprüsü kurulur.'
+  },
+  {
+    name: 'Briar', icon: '🛡️', color: '#e74c3c', band: 'Bluetooth / Wi-Fi / Tor',
+    desc: 'Afet ve otoriter rejim senaryoları için mesajlaşma. Tor, BT ve Wi-Fi üzerinden çalışır. Merkezi sunucu yok.',
+    key: 'QR kod ile anahtar değişimi (MITM imkansız). İnternet olmadan BT mesh üzerinden iletir.'
+  },
+  {
+    name: 'Yggdrasil', icon: '🌿', color: '#27ae60', band: 'IP ağ katmanı',
+    desc: 'Kendi kendini yapılandıran IPv6 mesh ağı. Kriptografik kimlikler. LAN ve Wi-Fi üzerinde çalışır.',
+    key: 'yggdrasil -autoconf ile başlar; multicast ile yerel cihazları otomatik keşfeder.'
+  },
+];
+
+// ── Eğitim müfredatı verileri ─────────────────────────────────────────────────
+
+var EGITIM_MODULLER = [
+  {
+    num: 1, color: '#2ecc71', icon: '⚖️', title: 'Radyo Hukuku & Teori',
+    topics: [
+      { title: 'KEGM Lisans Sınavı',
+        desc: 'Yılda 2 kez; 50 soru × 2 puan. A/B sınıfı için %75 (38+ doğru), C sınıfı için %60 (30+ doğru) geçme notu.' },
+      { title: 'Yetkinlik Sınıfları',
+        desc: 'A/B: tüm bantlar ve yüksek çıkış gücü. C: sınırlı bant ve çıkış gücü yetkisi.' },
+      { title: 'Frekans Bantları',
+        desc: 'HF: iyonosfer (skywave) ile 1000+ km. VHF: line-of-sight + troposfer. UHF: bina içi penetrasyon.' },
+      { title: 'Fonetik Alfabe & Q Kodları',
+        desc: 'Alpha-Bravo-Charlie… standardı. Q kodları kısa ve net bilgi aktarımı için uluslararası kısaltmalar.' },
+    ]
+  },
+  {
+    num: 2, color: '#f39c12', icon: '📡', title: 'Anten Teorisi & Saha Kurulumu',
+    topics: [
+      { title: 'Anten Boy Hesabı',
+        desc: 'λ/4 (çeyrek dalga) = 75 / f(MHz) metre. 145 MHz VHF için ≈ 0.52 m, 433 MHz UHF için ≈ 0.17 m.' },
+      { title: 'SWR & Empedans Eşleşmesi',
+        desc: 'SWR < 1.5 ideal. NanoVNA ile ölçüm. Uyumsuz anten güç kaybına ve PA hasarına yol açar.' },
+      { title: 'Anten Tipleri',
+        desc: 'Dipol: her yön. Yagi: yönlü yüksek kazanç. Ground plane: taşınabilir omni. Manyetik taban: araç.' },
+      { title: 'Programlama & CHIRP',
+        desc: 'USB kablo → Radio > Download → tabloyu doldur → Upload. Tüm şehir röleleri dakikada hafızaya alınır.' },
+    ]
+  },
+  {
+    num: 3, color: '#3498db', icon: '📦', title: 'Paket Radyo & AX.25',
+    topics: [
+      { title: 'AFSK Modülasyon',
+        desc: '1200 baud. "1" biti = 1200 Hz (Mark), "0" biti = 2200 Hz (Space) ses frekansı olarak iletilir.' },
+      { title: 'AX.25 Protokolü',
+        desc: 'OSI Katman 2. Çağrı işareti adresleme, NRZI kodlama, CRC hata denetimi, bit stuffing içerir.' },
+      { title: 'Direwolf TNC',
+        desc: 'Ses kartı tabanlı yazılım TNC. sudo apt install direwolf ile kurulur, donanım gerektirmez.' },
+      { title: 'Python ile AX.25',
+        desc: 'aprs3, aioax25, pyham_ax25 kütüphaneleri. APRS paketi ayrıştırma, gönderme ve IGate işlemleri.' },
+    ]
+  },
+  {
+    num: 4, color: '#9b59b6', icon: '📻', title: 'Yazılım Tanımlı Radyo (SDR)',
+    topics: [
+      { title: 'SDR Donanımları',
+        desc: 'RTL-SDR (~$20): geniş bant izleme. HackRF (~$300): TX+RX. ADALM PlutoSDR: I/Q yüksek hız.' },
+      { title: 'GNU Radio Akış Tasarımı',
+        desc: 'Görsel blok diyagramı ile filtre, demodülatör ve kod çözücü zincirleri oluşturulur.' },
+      { title: 'ADS-B & Havacılık Telemetri',
+        desc: 'Uçakların 1090 MHz transponder sinyali alınır; konum haritada gerçek zamanlı izlenir.' },
+      { title: 'Kurulum',
+        desc: 'libiio + SoapySDR → GNU Radio veya Gqrx. RTL-SDR için rtl-sdr paketi yeterli.' },
+    ]
+  },
+  {
+    num: 5, color: '#e74c3c', icon: '🌐', title: 'Mesh & Kriptografik Ağlar',
+    topics: [
+      { title: 'Meshtastic Kurulumu',
+        desc: 'ESP32 + LoRa SX1276. Python API: SerialInterface().sendText("test"). Deep sleep duty cycling.' },
+      { title: 'Reticulum (RNS)',
+        desc: 'pip install rns. rns.Interface ile LoRa/Wi-Fi köprüsü. Sideband ile şifreli mobil mesaj.' },
+      { title: 'Briar & Bramble',
+        desc: 'GPL-3.0 Android uygulaması. BT + Wi-Fi + Tor katmanları. QR kod ile güvenli el sıkışma.' },
+      { title: 'Yggdrasil Mesh',
+        desc: 'yggdrasil -autoconf ile otomatik IPv6 mesh. HJSON konfigürasyonu ile güvenilir arayüzler tanımlanır.' },
+    ]
+  },
+];
+
 // ── Frekans paneli ────────────────────────────────────────────────────────────
 
 function renderFreqs() {
@@ -592,22 +752,113 @@ function renderProtocol() {
 
 // ── Eğitim rehberi ────────────────────────────────────────────────────────────
 
-function renderTraining(data) {
-  if (!data) return;
-  var el = document.getElementById('tab-guide');
-  if (!el) return;
-  var html = '<p class="training-subtitle">Hedef Röle: <strong>' + data.target_relay + '</strong></p>';
-  for (var i = 0; i < data.steps.length; i++) {
-    var s    = data.steps[i];
-    var desc = s.description
-      .replace(/(\d{3}\.\d{3,4})\s*MHz/g, '<code>$1 MHz</code>')
-      .replace(/(\d{2,3}(?:\.\d+)?)\s*Hz/g,  '<code>$1 Hz</code>')
-      .replace(/(00\.600)/g,                  '<code>$1</code>')
-      .replace(/Menü\s+(\d+)/g,               'Menü <strong>$1</strong>');
+function buildStepCards(steps, transformDesc) {
+  var html = '';
+  for (var i = 0; i < steps.length; i++) {
+    var s    = steps[i];
+    var desc = transformDesc ? transformDesc(s.description) : s.description;
     html += '<div class="step-card">'
       + '<div class="step-num">' + s.step + '</div>'
       + '<div class="step-content"><h3>' + s.title + '</h3><p>' + desc + '</p></div>'
       + '</div>';
+  }
+  return html;
+}
+
+function renderTraining(data) {
+  var el = document.getElementById('tab-guide');
+  if (!el) return;
+  var html = '';
+
+  if (data) {
+    html += '<p class="protocol-section-title">📻 Baofeng UV-5R – Manuel Programlama</p>'
+          + '<p class="training-subtitle">Hedef Röle: <strong>' + data.target_relay + '</strong></p>';
+    html += buildStepCards(data.steps, function(d) {
+      return d
+        .replace(/(\d{3}\.\d{3,4})\s*MHz/g, '<code>$1 MHz</code>')
+        .replace(/(\d{2,3}(?:\.\d+)?)\s*Hz/g, '<code>$1 Hz</code>')
+        .replace(/(00\.600)/g, '<code>$1</code>')
+        .replace(/Menü\s+(\d+)/g, 'Menü <strong>$1</strong>');
+    });
+  }
+
+  html += '<p class="protocol-section-title" style="margin-top:18px">📡 TYT TH-9800 – Mobil İstasyon</p>'
+        + '<p class="training-subtitle">Hedef Röle: <strong>' + TYT_GUIDE.target_relay + '</strong></p>';
+  html += buildStepCards(TYT_GUIDE.steps, function(d) {
+    return d.replace(/Menü\s+(\d+)/g, 'Menü <strong>$1</strong>');
+  });
+
+  html += '<p class="protocol-section-title" style="margin-top:18px">💻 CHIRP – Toplu Programlama</p>'
+        + '<p class="training-subtitle">Hedef: <strong>' + CHIRP_GUIDE.target_relay + '</strong></p>';
+  html += buildStepCards(CHIRP_GUIDE.steps, null);
+
+  el.innerHTML = html;
+}
+
+// ── Q Kodları paneli ─────────────────────────────────────────────────────────
+
+function renderQCodes() {
+  var el = document.getElementById('tab-qcodes');
+  if (!el) return;
+  var html = '<p class="freq-copy-hint">Koda tıklayarak panoya kopyalayın</p><div class="qcode-grid">';
+  for (var i = 0; i < Q_KODLARI.length; i++) {
+    var q = Q_KODLARI[i];
+    html += '<div class="qcode-card" data-copy="' + q.code + '" title="Kopyala: ' + q.code + '">'
+      + '<span class="qcode-code">' + q.code + '</span>'
+      + '<span class="qcode-meaning">' + q.meaning + '</span>'
+      + '<span class="freq-desc">' + q.usage + '</span>'
+      + '</div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('.qcode-card').forEach(function(card) {
+    card.addEventListener('click', function() { copyText(this.dataset.copy); });
+  });
+}
+
+// ── Mesh & Dijital paneli ────────────────────────────────────────────────────
+
+function renderMesh() {
+  var el = document.getElementById('tab-mesh');
+  if (!el) return;
+  var html = '<div class="mesh-grid">';
+  for (var i = 0; i < MESH_TEKNOLOJILER.length; i++) {
+    var t = MESH_TEKNOLOJILER[i];
+    html += '<div class="mesh-card">'
+      + '<div class="mesh-card-header" style="border-left-color:' + t.color + '">'
+      + '<span class="mesh-icon">' + t.icon + '</span>'
+      + '<div><span class="mesh-name">' + t.name + '</span>'
+      + '<span class="mesh-band">' + t.band + '</span></div>'
+      + '</div>'
+      + '<p class="mesh-desc">' + t.desc + '</p>'
+      + '<p class="mesh-key">' + t.key + '</p>'
+      + '</div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── Eğitim müfredatı paneli ──────────────────────────────────────────────────
+
+function renderEgitim() {
+  var el = document.getElementById('tab-egitim');
+  if (!el) return;
+  var html = '';
+  for (var i = 0; i < EGITIM_MODULLER.length; i++) {
+    var m = EGITIM_MODULLER[i];
+    html += '<details class="edu-module"' + (i === 0 ? ' open' : '') + '>'
+      + '<summary class="edu-module-header">'
+      + '<div class="phase-num" style="background:' + m.color + '">' + m.num + '</div>'
+      + '<span class="edu-module-title">' + m.icon + ' ' + m.title + '</span>'
+      + '</summary><div class="edu-topics">';
+    for (var j = 0; j < m.topics.length; j++) {
+      var topic = m.topics[j];
+      html += '<div class="edu-topic">'
+        + '<span class="edu-topic-title">' + topic.title + '</span>'
+        + '<span class="edu-topic-desc">' + topic.desc + '</span>'
+        + '</div>';
+    }
+    html += '</div></details>';
   }
   el.innerHTML = html;
 }
@@ -732,6 +983,9 @@ function init() {
   // Panelleri önceden doldur
   renderFreqs();
   renderProtocol();
+  renderQCodes();
+  renderMesh();
+  renderEgitim();
 
   // Offline
   document.getElementById('btn-offline').addEventListener('click', showOfflineInfo);

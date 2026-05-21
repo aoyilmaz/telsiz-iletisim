@@ -151,30 +151,30 @@
       <button id="btn-mobile-list" class="mobile-list-btn" title="Röle listesi">☰</button>
     </main>
 
-  </div>
+    <!-- ── Referans paneli (ana gövde içinde) ── -->
+    <aside class="ref-panel" id="ref-panel">
+      <div class="ref-panel-inner">
+        <div class="ref-panel-header">
+          <h2>Acil Referans</h2>
+          <button id="ref-panel-close" class="ref-panel-close">✕</button>
+        </div>
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="tab-freqs">📡 Frekanslar</button>
+          <button class="modal-tab"        data-tab="tab-protocol">🚨 Protokol</button>
+          <button class="modal-tab"        data-tab="tab-guide">📻 Rehber</button>
+          <button class="modal-tab"        data-tab="tab-qcodes">🔤 Q Kodları</button>
+          <button class="modal-tab"        data-tab="tab-mesh">🌐 Mesh</button>
+          <button class="modal-tab"        data-tab="tab-egitim">🎓 Eğitim</button>
+        </div>
+        <div class="modal-body" id="tab-freqs"></div>
+        <div class="modal-body" id="tab-protocol" style="display:none"></div>
+        <div class="modal-body" id="tab-guide"    style="display:none"></div>
+        <div class="modal-body" id="tab-qcodes"   style="display:none"></div>
+        <div class="modal-body" id="tab-mesh"     style="display:none"></div>
+        <div class="modal-body" id="tab-egitim"   style="display:none"></div>
+      </div>
+    </aside>
 
-  <!-- ── Referans modal ────────────────────────────── -->
-  <div class="modal-overlay" id="training-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Acil Referans</h2>
-        <button class="modal-close" id="modal-close">✕</button>
-      </div>
-      <div class="modal-tabs">
-        <button class="modal-tab active" data-tab="tab-freqs">📡 Frekanslar</button>
-        <button class="modal-tab"        data-tab="tab-protocol">🚨 Protokol</button>
-        <button class="modal-tab"        data-tab="tab-guide">📻 Rehber</button>
-        <button class="modal-tab"        data-tab="tab-qcodes">🔤 Q Kodları</button>
-        <button class="modal-tab"        data-tab="tab-mesh">🌐 Mesh</button>
-        <button class="modal-tab"        data-tab="tab-egitim">🎓 Eğitim</button>
-      </div>
-      <div class="modal-body" id="tab-freqs"></div>
-      <div class="modal-body" id="tab-protocol" style="display:none"></div>
-      <div class="modal-body" id="tab-guide"    style="display:none"></div>
-      <div class="modal-body" id="tab-qcodes"   style="display:none"></div>
-      <div class="modal-body" id="tab-mesh"     style="display:none"></div>
-      <div class="modal-body" id="tab-egitim"   style="display:none"></div>
-    </div>
   </div>
 
   <!-- Toast bildirimi -->

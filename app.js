@@ -962,11 +962,14 @@ function init() {
   // Konum
   document.getElementById('btn-locate').addEventListener('click', locateUser);
 
-  // Referans modalı
-  var modal = document.getElementById('training-modal');
-  document.getElementById('btn-training').addEventListener('click', function() { modal.classList.add('active'); });
-  document.getElementById('modal-close').addEventListener('click', function() { modal.classList.remove('active'); });
-  modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('active'); });
+  // Referans paneli
+  var refPanel = document.getElementById('ref-panel');
+  document.getElementById('btn-training').addEventListener('click', function() {
+    refPanel.classList.toggle('open');
+  });
+  document.getElementById('ref-panel-close').addEventListener('click', function() {
+    refPanel.classList.remove('open');
+  });
 
   // Tab geçişi
   document.querySelectorAll('.modal-tab').forEach(function(tab) {
@@ -994,9 +997,10 @@ function init() {
   document.getElementById('btn-mobile-list').addEventListener('click', function() {
     document.querySelector('.sidebar').classList.toggle('drawer-open');
   });
-  // Haritaya tıklayınca drawer'ı kapat
+  // Haritaya tıklayınca sidebar drawer ve referans panelini kapat
   map.on('click', function() {
     document.querySelector('.sidebar').classList.remove('drawer-open');
+    document.getElementById('ref-panel').classList.remove('open');
   });
 
   // Bağlantı

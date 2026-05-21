@@ -220,42 +220,43 @@ body {
 .popup-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
 .popup-notes { margin-top: 9px; font-size: 11px; color: var(--muted); line-height: 1.5; }
 
-/* ── Modal ── */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,.72);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s;
-}
-.modal-overlay.active { opacity: 1; pointer-events: all; }
-.modal {
+/* ── Referans paneli ── */
+.ref-panel {
+  width: 0;
+  overflow: hidden;
   background: var(--surface);
-  border-radius: 14px;
-  width: min(580px, 95vw);
-  max-height: 88vh;
+  flex-shrink: 0;
+  border-left: 1px solid rgba(255,255,255,.06);
+  transition: width .28s ease;
+  position: relative;
+}
+.ref-panel.open { width: 360px; }
+
+.ref-panel-inner {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 360px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 64px rgba(0,0,0,.55);
-  border: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
 }
-.modal-header {
-  padding: 18px 22px;
+.ref-panel-header {
+  padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,.07);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
 }
-.modal-header h2 { font-size: 15px; font-weight: 700; }
-.modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 2px 8px; border-radius: 5px; line-height: 1; }
-.modal-close:hover { background: rgba(255,255,255,.1); color: var(--text); }
-.modal-body { padding: 18px 22px; overflow-y: auto; flex: 1; min-height: 0; }
+.ref-panel-header h2 { font-size: 14px; font-weight: 700; }
+.ref-panel-close {
+  background: none; border: none; color: var(--muted);
+  font-size: 20px; cursor: pointer; padding: 2px 8px;
+  border-radius: 5px; line-height: 1;
+}
+.ref-panel-close:hover { background: rgba(255,255,255,.1); color: var(--text); }
+
+.modal-body { padding: 16px 18px; overflow-y: auto; flex: 1; min-height: 0; }
 
 .training-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
 .training-subtitle strong { color: var(--text); }
@@ -711,6 +712,17 @@ body {
   .mobile-list-btn { display: flex; }
   .app-header h1 { font-size: 13px; }
   .btn { padding: 6px 10px; font-size: 12px; }
+
+  /* Mobilde panel sağdan kayar, haritanın üzerine gelir */
+  .ref-panel {
+    position: fixed;
+    top: var(--header-h); right: 0; bottom: 0;
+    z-index: 650;
+    box-shadow: -4px 0 24px rgba(0,0,0,.5);
+    border-left: none;
+  }
+  .ref-panel.open { width: min(360px, 94vw); }
+  .ref-panel-inner { width: min(360px, 94vw); }
 }
 @media (max-width: 420px) {
   .header-icon { display: none; }

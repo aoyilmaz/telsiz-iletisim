@@ -1,4 +1,4 @@
-const CACHE_APP  = 'afet-app-v7';
+const CACHE_APP  = 'afet-app-v8';
 const CACHE_TILE = 'afet-tile-v1';
 
 const APP_FILES = [

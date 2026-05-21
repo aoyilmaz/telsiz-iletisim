@@ -693,6 +693,99 @@ var EGITIM_MODULLER = [
   },
 ];
 
+// ── NATO Fonetik Alfabe ───────────────────────────────────────────────────────
+
+var NATO_ALFABE = [
+  {l:'A',w:'Alpha'},   {l:'B',w:'Bravo'},    {l:'C',w:'Charlie'}, {l:'D',w:'Delta'},
+  {l:'E',w:'Echo'},    {l:'F',w:'Foxtrot'},  {l:'G',w:'Golf'},    {l:'H',w:'Hotel'},
+  {l:'I',w:'India'},   {l:'J',w:'Juliet'},   {l:'K',w:'Kilo'},    {l:'L',w:'Lima'},
+  {l:'M',w:'Mike'},    {l:'N',w:'November'}, {l:'O',w:'Oscar'},   {l:'P',w:'Papa'},
+  {l:'Q',w:'Quebec'},  {l:'R',w:'Romeo'},    {l:'S',w:'Sierra'},  {l:'T',w:'Tango'},
+  {l:'U',w:'Uniform'}, {l:'V',w:'Victor'},   {l:'W',w:'Whiskey'}, {l:'X',w:'X-ray'},
+  {l:'Y',w:'Yankee'},  {l:'Z',w:'Zulu'},
+];
+
+// ── DMR Codeplug rehberi ──────────────────────────────────────────────────────
+
+var DMR_GUIDE = {
+  target_relay: 'Mersin İnsu DMR – 439.238 MHz / TS-2',
+  steps: [
+    { step: 1, title: 'Kanal Tipini Seç',
+      description: 'Cihazı DMR moduna alın. Yeni kanal oluştururken Channel Type: Digital seçin.' },
+    { step: 2, title: 'Color Code (CC)',
+      description: 'Rölenin Color Code değerini girin — Türkiye\'de genellikle CC1. CTCSS yerine DMR\'de renk kodu kullanılır.' },
+    { step: 3, title: 'Time Slot (TS)',
+      description: 'Zaman dilimini seçin: TS-1 yerel trafik, TS-2 geniş ağ bağlantısı. Türkiye röleleri çoğunlukla TS-2 kullanır.' },
+    { step: 4, title: 'Talk Group (TG)',
+      description: 'TG 286 Türkiye ulusal, TG 2860 bölgesel. Acil haberleşme için TG 9112 (uluslararası TAC acil).' },
+    { step: 5, title: 'CPS Yazılımı',
+      description: 'CHIRP DMR desteklemez. Cihaza özgü CPS (Customer Programming Software) kullanın; üreticinin sitesinden ücretsiz indirilir.' },
+  ]
+};
+
+// ── Afet senaryoları ──────────────────────────────────────────────────────────
+
+var AFET_SENARYOLAR = [
+  {
+    title: 'Deprem', icon: '🏚️', color: '#e74c3c',
+    steps: [
+      'Sarsıntı bitince güvenli alana çık, telsizi hemen aç',
+      'UHF 433.500 MHz dene — beton/enkaz içinde VHF\'den iyi nüfuz eder',
+      'CTCSS tonsuz çağır; röle hasarlı olabilir, simplex da dene',
+      '145.500 MHz simplex: röle yoksa simplex hayat kurtarır',
+      'APRS 144.800 MHz: GPS konumunu otomatik yayınla',
+    ]
+  },
+  {
+    title: 'Sel / Taşkın', icon: '🌊', color: '#3498db',
+    steps: [
+      'Yüksek zemine çık; telsizi su geçirmez korumaya al',
+      'VHF tercih et — açık su yüzeyi VHF için idealdir',
+      'Kıyıda: 156.800 MHz (Deniz Ch16) uluslararası acil kanalı',
+      'Yerel röle ile tahliye güzergahlarını koordine et',
+      'PTT\'ye kısa bas (3–5 sn); uzun iletim pili tüketir',
+    ]
+  },
+  {
+    title: 'Kentsel', icon: '🏙️', color: '#9b59b6',
+    steps: [
+      'Bina yoğunluğunda UHF (433 MHz) ön planda tut',
+      'Röleyi bu haritadan bul; CTCSS tonunu girmeden PTT\'ye basma',
+      'DMR/C4FM röle varsa kullan — kanal kalabalığı yaratmaz',
+      'Kanal doluysa "BREAK BREAK" de ve 5 sn bekle',
+      'Sinyal zayıfsa yüksek kata ya da bina dışına çık',
+    ]
+  },
+  {
+    title: 'Kırsal / Dağlık', icon: '⛰️', color: '#2ecc71',
+    steps: [
+      'Line-of-sight baskın: VHF (145 MHz) ilk tercih',
+      'Her 10 m rakım ≈ 4 km ekstra menzil; en yüksek noktaya çık',
+      'Röleye ulaşamazsan simplex: dağlarda 20–50 km mümkün',
+      'HF düşün: 7.110 MHz bölgesel, 14.300 MHz uluslararası',
+      'Anteni dik tut; yatay polarizasyon kaybına yol açar',
+    ]
+  },
+];
+
+// ── Simplex & APRS harita noktaları ──────────────────────────────────────────
+
+var SIMPLEX_APRS = [
+  {id:'sx-ist', type:'simplex', name:'İstanbul – Simplex',  lat:41.015, lon:28.980, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-ank', type:'simplex', name:'Ankara – Simplex',    lat:39.925, lon:32.865, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-izm', type:'simplex', name:'İzmir – Simplex',     lat:38.420, lon:27.130, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-brs', type:'simplex', name:'Bursa – Simplex',     lat:40.200, lon:29.060, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-ada', type:'simplex', name:'Adana – Simplex',     lat:37.010, lon:35.330, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-gaz', type:'simplex', name:'Gaziantep – Simplex', lat:37.065, lon:37.380, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-ant', type:'simplex', name:'Antalya – Simplex',   lat:36.897, lon:30.713, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'sx-tra', type:'simplex', name:'Trabzon – Simplex',   lat:41.005, lon:39.725, freq:'145.500 / 433.500', note:'VHF+UHF ulusal çağrı kanalları'},
+  {id:'aprs-ist', type:'aprs', name:'İstanbul – APRS',  lat:41.060, lon:29.020, freq:'144.800', note:'APRS ağ bölgesi · aprs.fi üzerinden izle'},
+  {id:'aprs-ank', type:'aprs', name:'Ankara – APRS',    lat:39.950, lon:32.840, freq:'144.800', note:'APRS ağ bölgesi · aprs.fi üzerinden izle'},
+  {id:'aprs-izm', type:'aprs', name:'İzmir – APRS',     lat:38.450, lon:27.160, freq:'144.800', note:'APRS ağ bölgesi · aprs.fi üzerinden izle'},
+  {id:'aprs-ada', type:'aprs', name:'Adana – APRS',     lat:37.025, lon:35.310, freq:'144.800', note:'APRS ağ bölgesi · aprs.fi üzerinden izle'},
+  {id:'aprs-gaz', type:'aprs', name:'Gaziantep – APRS', lat:37.080, lon:37.400, freq:'144.800', note:'APRS ağ bölgesi · aprs.fi üzerinden izle'},
+];
+
 // ── Frekans paneli ────────────────────────────────────────────────────────────
 
 function renderFreqs() {
@@ -747,6 +840,22 @@ function renderProtocol() {
     }
     html += '</div></div>';
   }
+
+  html += '<p class="protocol-section-title" style="margin-top:18px">Senaryo Bazlı Protokoller</p>'
+        + '<div class="scenario-grid">';
+  for (var s = 0; s < AFET_SENARYOLAR.length; s++) {
+    var sc = AFET_SENARYOLAR[s];
+    html += '<div class="scenario-card" style="border-left-color:' + sc.color + '">'
+      + '<div class="scenario-header">'
+      + '<span style="font-size:18px">' + sc.icon + '</span>'
+      + '<span class="scenario-title">' + sc.title + '</span>'
+      + '</div>';
+    for (var t = 0; t < sc.steps.length; t++) {
+      html += '<div class="scenario-step">' + sc.steps[t] + '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
   el.innerHTML = html;
 }
 
@@ -792,6 +901,10 @@ function renderTraining(data) {
         + '<p class="training-subtitle">Hedef: <strong>' + CHIRP_GUIDE.target_relay + '</strong></p>';
   html += buildStepCards(CHIRP_GUIDE.steps, null);
 
+  html += '<p class="protocol-section-title" style="margin-top:18px">📶 DMR Codeplug Programlama</p>'
+        + '<p class="training-subtitle">Hedef Röle: <strong>' + DMR_GUIDE.target_relay + '</strong></p>';
+  html += buildStepCards(DMR_GUIDE.steps, null);
+
   el.innerHTML = html;
 }
 
@@ -810,8 +923,20 @@ function renderQCodes() {
       + '</div>';
   }
   html += '</div>';
+
+  html += '<p class="protocol-section-title" style="margin-top:18px">NATO Fonetik Alfabe</p>'
+        + '<p class="freq-copy-hint">Harfe tıklayarak fonetik adı kopyalayın</p>'
+        + '<div class="nato-grid">';
+  for (var j = 0; j < NATO_ALFABE.length; j++) {
+    var n = NATO_ALFABE[j];
+    html += '<div class="nato-card" data-copy="' + n.w + '" title="Kopyala: ' + n.w + '">'
+      + '<span class="nato-letter">' + n.l + '</span>'
+      + '<span class="nato-word">' + n.w + '</span>'
+      + '</div>';
+  }
+  html += '</div>';
   el.innerHTML = html;
-  el.querySelectorAll('.qcode-card').forEach(function(card) {
+  el.querySelectorAll('.qcode-card, .nato-card').forEach(function(card) {
     card.addEventListener('click', function() { copyText(this.dataset.copy); });
   });
 }
@@ -863,6 +988,139 @@ function renderEgitim() {
   el.innerHTML = html;
 }
 
+
+// ── Simplex & APRS harita katmanı ────────────────────────────────────────────
+
+var specialLayer       = null;
+var specialLayerActive = false;
+
+function makeSpecialIcon(color) {
+  var d = '<div style="width:11px;height:11px;background:' + color
+    + ';border:2px solid rgba(255,255,255,.9);border-radius:2px;'
+    + 'box-shadow:0 0 7px ' + color + ';transform:rotate(45deg)"></div>';
+  return L.divIcon({ className:'', html:d, iconSize:[11,11], iconAnchor:[5,5], popupAnchor:[0,-10] });
+}
+
+function initSpecialLayers() {
+  specialLayer = L.layerGroup();
+  for (var i = 0; i < SIMPLEX_APRS.length; i++) {
+    var pt    = SIMPLEX_APRS[i];
+    var color = pt.type === 'aprs' ? '#c39bd3' : '#5dade2';
+    var typeLabel = pt.type === 'aprs' ? 'APRS Dijipeater Bölgesi' : 'VHF / UHF Simplex';
+    var popup = '<div class="popup-title">' + pt.name + '</div>'
+      + '<div class="popup-row"><span class="popup-label">Tip</span>'
+      + '<span class="popup-value">' + typeLabel + '</span></div>'
+      + '<div class="popup-row"><span class="popup-label">Frekans</span>'
+      + '<span class="popup-value popup-copy" data-copy="' + pt.freq + ' MHz">' + pt.freq + ' MHz</span></div>'
+      + '<div class="popup-notes">' + pt.note + '</div>';
+    (function(p) {
+      var m = L.marker([p.lat, p.lon], { icon: makeSpecialIcon(color), title: p.name });
+      m.bindPopup(popup, { maxWidth: 260 });
+      m.on('popupopen', function(e) {
+        e.popup.getElement().querySelectorAll('.popup-copy').forEach(function(span) {
+          span.onclick = function() { copyText(this.dataset.copy); };
+        });
+      });
+      specialLayer.addLayer(m);
+    })(pt);
+  }
+}
+
+function toggleSpecialLayer() {
+  var btn = document.getElementById('btn-layer-special');
+  if (specialLayerActive) {
+    map.removeLayer(specialLayer);
+    specialLayerActive = false;
+    if (btn) btn.classList.remove('active');
+  } else {
+    specialLayer.addTo(map);
+    specialLayerActive = true;
+    if (btn) btn.classList.add('active');
+  }
+}
+
+// ── Frekans / Offset Hesaplayıcı ─────────────────────────────────────────────
+
+var CTCSS_TONES = [67.0,71.9,74.4,77.0,79.7,82.5,85.4,88.5,91.5,94.8,97.4,100.0,
+  103.5,107.2,110.9,114.8,118.8,123.0,127.3,131.8,136.5,141.3,146.2,151.4,
+  156.7,162.2,167.9,173.8,179.9,186.2,192.8,203.5,210.7,218.1,225.7,233.6,241.8,250.3];
+
+function renderHesap() {
+  var el = document.getElementById('tab-hesap');
+  if (!el) return;
+  var opts = CTCSS_TONES.map(function(t) {
+    return '<option value="' + t + '"' + (t === 88.5 ? ' selected' : '') + '>' + t + ' Hz</option>';
+  }).join('');
+
+  el.innerHTML =
+    '<div class="calc-section">'
+    + '<label class="calc-label">Dinleme Frekansı (Röle TX / RX)</label>'
+    + '<div class="calc-input-row">'
+    + '<input type="number" id="calc-freq" class="calc-input" placeholder="ör. 145.675" step="0.025" min="130" max="450">'
+    + '<span class="calc-unit">MHz</span></div>'
+    + '<label class="calc-label">CTCSS Tonu</label>'
+    + '<select id="calc-ctcss" class="calc-input"><option value="">— Ton yok —</option>' + opts + '</select>'
+    + '<button id="calc-btn" class="btn btn-primary" style="width:100%;margin-top:14px">Hesapla</button>'
+    + '</div>'
+    + '<div class="calc-result" id="calc-result" style="display:none">'
+    + '<div class="calc-res-band" id="calc-res-band"></div>'
+    + '<div class="calc-res-row"><span class="calc-res-label">Dinleme (RX)</span>'
+    + '<span class="calc-res-val popup-copy" id="calc-rx" title="Kopyala"></span></div>'
+    + '<div class="calc-res-row"><span class="calc-res-label">Gönderme (TX)</span>'
+    + '<span class="calc-res-val popup-copy" id="calc-tx" title="Kopyala"></span></div>'
+    + '<div class="calc-res-row"><span class="calc-res-label">Offset</span>'
+    + '<span class="calc-res-val" id="calc-offset"></span></div>'
+    + '<div class="calc-res-row" id="calc-tone-row"><span class="calc-res-label">CTCSS</span>'
+    + '<span class="calc-res-val popup-copy" id="calc-tone" title="Kopyala"></span></div>'
+    + '<div class="calc-copy-all">'
+    + '<button class="btn btn-secondary calc-copy-btn" id="calc-copy-chirp">💾 CHIRP formatında kopyala</button>'
+    + '</div></div>';
+
+  document.getElementById('calc-btn').addEventListener('click', function() {
+    var freq = parseFloat(document.getElementById('calc-freq').value);
+    if (isNaN(freq) || freq < 130 || freq > 450) {
+      showToast('Geçerli frekans girin (130–450 MHz)');
+      return;
+    }
+    var offset, bandLabel;
+    if (freq >= 144 && freq < 148)      { offset = -0.600; bandLabel = 'VHF · 144–148 MHz · Offset –0.600'; }
+    else if (freq >= 430 && freq < 440) { offset = -7.600; bandLabel = 'UHF · 430–440 MHz · Offset –7.600'; }
+    else { showToast('Standart VHF (144–148) veya UHF (430–440) aralığı dışında'); return; }
+
+    var tx    = Math.round((freq + offset) * 10000) / 10000;
+    var ctcss = document.getElementById('calc-ctcss').value;
+
+    document.getElementById('calc-res-band').textContent = bandLabel;
+    var rxEl = document.getElementById('calc-rx');
+    rxEl.textContent = freq.toFixed(4) + ' MHz';
+    rxEl.dataset.copy = freq.toFixed(4) + ' MHz';
+    var txEl = document.getElementById('calc-tx');
+    txEl.textContent = tx.toFixed(4) + ' MHz';
+    txEl.dataset.copy = tx.toFixed(4) + ' MHz';
+    document.getElementById('calc-offset').textContent = offset + ' MHz';
+
+    var toneRow = document.getElementById('calc-tone-row');
+    if (ctcss) {
+      var toneEl = document.getElementById('calc-tone');
+      toneEl.textContent = ctcss + ' Hz';
+      toneEl.dataset.copy = ctcss + ' Hz';
+      toneRow.style.display = '';
+    } else { toneRow.style.display = 'none'; }
+
+    var offDir  = offset < 0 ? '-' : '+';
+    var offAbs  = Math.abs(offset).toFixed(3);
+    var chirp   = 'Röle,' + freq.toFixed(4) + ',' + offDir + ',' + offAbs + ','
+                + (ctcss ? 'Tone' : '') + ',' + (ctcss || '88.5') + ','
+                + (ctcss || '88.5') + ',023,NN,FM,5.00,,,,,,';
+    document.getElementById('calc-copy-chirp').onclick = function() { copyText(chirp); };
+
+    var res = document.getElementById('calc-result');
+    res.style.display = '';
+    res.querySelectorAll('.popup-copy').forEach(function(sp) {
+      sp.onclick = function() { copyText(this.dataset.copy); };
+    });
+  });
+}
 
 // ── Ana başlatma ─────────────────────────────────────────────────────────────
 
@@ -963,13 +1221,15 @@ function init() {
   document.getElementById('btn-locate').addEventListener('click', locateUser);
 
   // Referans paneli
-  var refPanel = document.getElementById('ref-panel');
-  document.getElementById('btn-training').addEventListener('click', function() {
-    refPanel.classList.toggle('open');
+  var refPanel  = document.getElementById('ref-panel');
+  var btnRef    = document.getElementById('btn-training');
+  function openRefPanel()  { refPanel.classList.add('open');    btnRef.textContent = '🗺️ Harita'; }
+  function closeRefPanel() { refPanel.classList.remove('open'); btnRef.textContent = '📻 Rehber'; }
+
+  btnRef.addEventListener('click', function() {
+    refPanel.classList.contains('open') ? closeRefPanel() : openRefPanel();
   });
-  document.getElementById('ref-panel-close').addEventListener('click', function() {
-    refPanel.classList.remove('open');
-  });
+  document.getElementById('ref-panel-close').addEventListener('click', closeRefPanel);
 
   // Tab geçişi
   document.querySelectorAll('.modal-tab').forEach(function(tab) {
@@ -989,6 +1249,11 @@ function init() {
   renderQCodes();
   renderMesh();
   renderEgitim();
+  renderHesap();
+
+  // Simplex / APRS katmanı
+  initSpecialLayers();
+  document.getElementById('btn-layer-special').addEventListener('click', toggleSpecialLayer);
 
   // Offline
   document.getElementById('btn-offline').addEventListener('click', showOfflineInfo);
@@ -997,10 +1262,9 @@ function init() {
   document.getElementById('btn-mobile-list').addEventListener('click', function() {
     document.querySelector('.sidebar').classList.toggle('drawer-open');
   });
-  // Haritaya tıklayınca sidebar drawer ve referans panelini kapat
+  // Haritaya tıklayınca sidebar drawer'ı kapat (referans panel kapatılmaz — map altında zaten)
   map.on('click', function() {
     document.querySelector('.sidebar').classList.remove('drawer-open');
-    document.getElementById('ref-panel').classList.remove('open');
   });
 
   // Bağlantı

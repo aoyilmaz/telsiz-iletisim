@@ -82,6 +82,7 @@ body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  position: relative;
 }
 
 /* ── Sidebar ── */
@@ -222,22 +223,25 @@ body {
 
 /* ── Referans paneli ── */
 .ref-panel {
-  width: 0;
-  overflow: hidden;
-  background: var(--surface);
-  flex-shrink: 0;
-  border-left: 1px solid rgba(255,255,255,.06);
-  transition: width .28s ease;
-  position: relative;
-}
-.ref-panel.open { width: 360px; }
-
-.ref-panel-inner {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 360px;
+  left: var(--sidebar-w);
+  top: 0; right: 0; bottom: 0;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  transform: translateX(calc(100% + 1px));
+  transition: transform .28s ease;
+  z-index: 200;
+  border-left: 1px solid rgba(255,255,255,.06);
+}
+.ref-panel.open { transform: translateX(0); }
+
+.ref-panel-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 .ref-panel-header {
@@ -693,6 +697,122 @@ body {
 .edu-topic-title   { font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 2px; }
 .edu-topic-desc    { font-size: 11px; color: var(--muted); line-height: 1.5; display: block; }
 
+/* ── NATO Fonetik Alfabe ── */
+.nato-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.nato-card {
+  background: var(--surface2);
+  border-radius: 5px;
+  padding: 7px 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  border: 1px solid rgba(255,255,255,.04);
+}
+.nato-card:hover  { background: #1c2d4a; transform: scale(1.04); }
+.nato-card:active { transform: scale(.96); }
+.nato-letter { font-size: 16px; font-weight: 700; display: block; color: var(--text); }
+.nato-word   { font-size: 9px; color: var(--muted); display: block; }
+
+/* ── Senaryo kartları ── */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.scenario-card {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  border-left: 3px solid;
+}
+.scenario-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 7px;
+}
+.scenario-title { font-size: 12px; font-weight: 700; }
+.scenario-step {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.65;
+  padding-left: 10px;
+  position: relative;
+}
+.scenario-step::before { content:'·'; position:absolute; left:2px; color:rgba(255,255,255,.3); }
+
+/* ── Harita katman butonu ── */
+.layer-group { display: flex; gap: 5px; margin-top: 6px; }
+.layer-btn {
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.layer-btn.active { background: #1a5c9c; color: #fff; border-color: #1a5c9c; }
+
+/* ── Frekans / Offset Hesaplayıcı ── */
+.calc-section { margin-bottom: 16px; }
+.calc-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 12px 0 5px;
+}
+.calc-label:first-child { margin-top: 0; }
+.calc-input-row { display: flex; align-items: center; gap: 8px; }
+.calc-input {
+  flex: 1;
+  width: 100%;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  appearance: none; -webkit-appearance: none;
+}
+.calc-input:focus { outline: none; border-color: var(--primary); }
+.calc-unit { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+.calc-result {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 4px;
+}
+.calc-res-band {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--muted);
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.calc-res-row {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 7px; font-size: 13px;
+}
+.calc-res-label { color: var(--muted); }
+.calc-res-val {
+  font-family: 'Courier New', monospace; font-weight: 700;
+  color: var(--vhf); cursor: pointer;
+}
+.calc-res-val:hover { color: #4a90d9; text-decoration: underline dotted; }
+.calc-copy-all {
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.calc-copy-btn { width: 100%; }
+
 /* ── Responsive ── */
 @media (max-width: 700px) {
   .sidebar {
@@ -713,16 +833,8 @@ body {
   .app-header h1 { font-size: 13px; }
   .btn { padding: 6px 10px; font-size: 12px; }
 
-  /* Mobilde panel sağdan kayar, haritanın üzerine gelir */
-  .ref-panel {
-    position: fixed;
-    top: var(--header-h); right: 0; bottom: 0;
-    z-index: 650;
-    box-shadow: -4px 0 24px rgba(0,0,0,.5);
-    border-left: none;
-  }
-  .ref-panel.open { width: min(360px, 94vw); }
-  .ref-panel-inner { width: min(360px, 94vw); }
+  /* Mobilde sidebar alt drawer'da olduğu için panel tüm genişliği kaplar */
+  .ref-panel { left: 0; border-left: none; }
 }
 @media (max-width: 420px) {
   .header-icon { display: none; }

@@ -437,11 +437,165 @@ function updateStatus() {
   text.textContent = navigator.onLine ? 'Çevrimiçi' : 'Çevrimdışı';
 }
 
-// ── Eğitim paneli ────────────────────────────────────────────────────────────
+// ── Acil frekans verileri ────────────────────────────────────────────────────
+
+var ACIL_FREQS = [
+  {
+    name: 'Türkiye Simplex',
+    freqs: [
+      { freq: '145.500', label: 'VHF Çağrı',    desc: 'Ulusal VHF acil çağrı kanalı' },
+      { freq: '433.500', label: 'UHF Çağrı',    desc: 'Ulusal UHF acil çağrı kanalı' },
+      { freq: '145.300', label: 'VHF Kanal 2',  desc: 'Alternatif VHF simplex' },
+      { freq: '433.450', label: 'UHF Kanal 2',  desc: 'Alternatif UHF simplex' },
+    ]
+  },
+  {
+    name: 'APRS & Uydu',
+    freqs: [
+      { freq: '144.800', label: 'APRS Avrupa',    desc: 'Otomatik paket raporlama' },
+      { freq: '144.390', label: 'APRS K.Amerika', desc: 'Kuzey Amerika APRS' },
+      { freq: '145.800', label: 'ISS Downlink',   desc: 'Uzay İstasyonu – VHF' },
+      { freq: '437.800', label: 'ISS Uplink',     desc: 'Uzay İstasyonu – UHF' },
+    ]
+  },
+  {
+    name: 'Havacılık & Denizcilik',
+    freqs: [
+      { freq: '121.500', label: 'Hava Acil',  desc: 'Uluslararası havacılık acil (AM)' },
+      { freq: '156.800', label: 'Deniz Ch16', desc: 'Uluslararası deniz acil çağrı' },
+      { freq: '156.300', label: 'Deniz Ch6',  desc: 'Gemi–gemi güvenlik kanalı' },
+    ]
+  },
+  {
+    name: 'HF Kısa Dalga',
+    freqs: [
+      { freq: '14.300', label: 'IARU Uluslararası', desc: 'Küresel amatör HF acil kanalı' },
+      { freq: '7.110',  label: 'HF Bölgesel',       desc: 'Bölgesel afet koordinasyonu' },
+      { freq: '3.760',  label: 'Avrupa 80m',         desc: 'Avrupa bölgesel acil kanal' },
+      { freq: '7.060',  label: 'Dijital Acil',       desc: 'JS8Call / Winlink HF acil' },
+    ]
+  }
+];
+
+var AFET_PROTOKOLU = {
+  signals: [
+    { word: 'MAYDAY',      desc: 'Hayati tehlike — 3 kez tekrar edilir' },
+    { word: 'PAN PAN',     desc: 'Acil durum — hayat tehlikesi yok' },
+    { word: 'SECURITE',    desc: 'Güvenlik uyarısı — seyrüsefer tehlikesi' },
+    { word: 'BREAK BREAK', desc: 'Acil iletişim için kanalı boşaltın' },
+  ],
+  phases: [
+    {
+      num: 1, color: '#2ecc71', icon: '📋', title: 'Hazırlık',
+      steps: [
+        'Telsizi tam şarjlı tutun, yedek batarya bulundurun',
+        'Yerel röle frekanslarını hafızaya kaydedin (CHIRP)',
+        'CTCSS tonlarını ve offsetleri önceden programlayın',
+        'Düzenli olarak acil kanalları dinleyin (145.500 MHz)',
+      ]
+    },
+    {
+      num: 2, color: '#f39c12', icon: '📡', title: 'İlk Temas: Simplex',
+      steps: [
+        '145.500 MHz (VHF) veya 433.500 MHz (UHF) açın',
+        'Squelch\'i en düşük seviyeye indirin',
+        '"[Çağrı işareti], acil, konum [yer], alıyor musunuz?" deyin',
+        '5–10 sn dinleyin; yanıt yoksa 3 kez tekrarlayın',
+      ]
+    },
+    {
+      num: 3, color: '#3498db', icon: '🔄', title: 'Röle Kullan',
+      steps: [
+        'Bu haritadan en yakın röleyi bulun',
+        'CTCSS tonunu ve offseti doğru girin',
+        'PTT\'ye basınca rölenin "açılma" sesini bekleyin',
+        'Mesajı kısa tutun: konum, durum, ihtiyaç',
+      ]
+    },
+    {
+      num: 4, color: '#9b59b6', icon: '📦', title: 'APRS / Veri',
+      steps: [
+        '144.800 MHz üzerinden konum raporunu yayınlayın',
+        'APRS paketi: çağrı işareti / GPS koordinatı / durum',
+        'İnternet olmadan yerel APRS ağı üzerinden iletilir',
+        'aprs.fi veya YAAC ile konumunuzu izleyin',
+      ]
+    },
+    {
+      num: 5, color: '#e74c3c', icon: '🌐', title: 'Dijital & HF',
+      steps: [
+        'DMR / C4FM rölelerine geçin; kapsama alanı daha geniş',
+        'HF 14.300 MHz: iyonosfer yansımasıyla kıtalararası iletişim',
+        'JS8Call: –24 dB SNR\'de bile veri aktarımı yapılır',
+        'Meshtastic / LoRa: internet yokken yerel mesh ağı kurun',
+      ]
+    },
+  ]
+};
+
+// ── Frekans paneli ────────────────────────────────────────────────────────────
+
+function renderFreqs() {
+  var el = document.getElementById('tab-freqs');
+  if (!el) return;
+  var html = '<p class="freq-copy-hint">Frekansa tıklayarak panoya kopyalayın</p>';
+  for (var i = 0; i < ACIL_FREQS.length; i++) {
+    var cat = ACIL_FREQS[i];
+    html += '<div class="freq-category">'
+      + '<div class="freq-category-title">' + cat.name + '</div>'
+      + '<div class="freq-grid">';
+    for (var j = 0; j < cat.freqs.length; j++) {
+      var f = cat.freqs[j];
+      html += '<div class="freq-card" data-copy="' + f.freq + ' MHz" title="Kopyala: ' + f.freq + ' MHz">'
+        + '<span class="freq-value">' + f.freq + ' MHz</span>'
+        + '<span class="freq-label">' + f.label + '</span>'
+        + '<span class="freq-desc">' + f.desc + '</span>'
+        + '</div>';
+    }
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('.freq-card').forEach(function(card) {
+    card.addEventListener('click', function() { copyText(this.dataset.copy); });
+  });
+}
+
+// ── Protokol paneli ───────────────────────────────────────────────────────────
+
+function renderProtocol() {
+  var el = document.getElementById('tab-protocol');
+  if (!el) return;
+  var html = '<p class="protocol-section-title">Acil Çağrı Sinyalleri</p>'
+           + '<div class="protocol-signals">';
+  for (var i = 0; i < AFET_PROTOKOLU.signals.length; i++) {
+    var s = AFET_PROTOKOLU.signals[i];
+    html += '<div class="signal-card">'
+      + '<span class="signal-word">' + s.word + '</span>'
+      + '<span class="signal-desc">' + s.desc + '</span>'
+      + '</div>';
+  }
+  html += '</div><p class="protocol-section-title">İletişim Aşamaları</p>';
+  for (var j = 0; j < AFET_PROTOKOLU.phases.length; j++) {
+    var p = AFET_PROTOKOLU.phases[j];
+    html += '<div class="protocol-phase">'
+      + '<div class="phase-header">'
+      + '<div class="phase-num" style="background:' + p.color + '">' + p.num + '</div>'
+      + '<span class="phase-title">' + p.icon + ' ' + p.title + '</span>'
+      + '</div><div class="phase-steps">';
+    for (var k = 0; k < p.steps.length; k++) {
+      html += '<div class="phase-step">' + p.steps[k] + '</div>';
+    }
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+// ── Eğitim rehberi ────────────────────────────────────────────────────────────
 
 function renderTraining(data) {
   if (!data) return;
-  document.getElementById('training-title').textContent = data.title;
+  var el = document.getElementById('tab-guide');
+  if (!el) return;
   var html = '<p class="training-subtitle">Hedef Röle: <strong>' + data.target_relay + '</strong></p>';
   for (var i = 0; i < data.steps.length; i++) {
     var s    = data.steps[i];
@@ -455,7 +609,7 @@ function renderTraining(data) {
       + '<div class="step-content"><h3>' + s.title + '</h3><p>' + desc + '</p></div>'
       + '</div>';
   }
-  document.getElementById('training-body').innerHTML = html;
+  el.innerHTML = html;
 }
 
 
@@ -557,11 +711,27 @@ function init() {
   // Konum
   document.getElementById('btn-locate').addEventListener('click', locateUser);
 
-  // Eğitim modalı
+  // Referans modalı
   var modal = document.getElementById('training-modal');
   document.getElementById('btn-training').addEventListener('click', function() { modal.classList.add('active'); });
   document.getElementById('modal-close').addEventListener('click', function() { modal.classList.remove('active'); });
   modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('active'); });
+
+  // Tab geçişi
+  document.querySelectorAll('.modal-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.modal-tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var target = this.dataset.tab;
+      document.querySelectorAll('.modal-body').forEach(function(body) {
+        body.style.display = body.id === target ? '' : 'none';
+      });
+    });
+  });
+
+  // Panelleri önceden doldur
+  renderFreqs();
+  renderProtocol();
 
   // Offline
   document.getElementById('btn-offline').addEventListener('click', showOfflineInfo);

@@ -18,7 +18,8 @@
       "Bash(python -c \"import requests; print\\('requests OK:', requests.__version__\\)\")",
       "Bash(python fetch_world_data.py)",
       "Bash(python -c \"import requests; r = requests.get\\('https://www.repeaterbook.com/row_repeaters/export.php?country=Germany&status_id=1&format=json', headers={'User-Agent':'Mozilla/5.0'}, timeout=20\\); print\\(r.status_code, r.text[:300]\\)\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('data.json',encoding='utf-8'\\)\\); print\\('keys:', list\\(d.keys\\(\\)\\), '| relay count:', len\\(d['relays']\\)\\)\")"
     ]
   }
 }

@@ -267,6 +267,154 @@ body {
 .step-content code { background: rgba(255,255,255,.1); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 12px; color: var(--vhf); }
 .step-content strong { color: var(--text); }
 
+/* ── Modal tabları ── */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
+  padding: 0 14px;
+  gap: 2px;
+  overflow-x: auto;
+}
+.modal-tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.modal-tab:hover  { color: var(--text); }
+.modal-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ── Frekans kartları ── */
+.freq-copy-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  padding: 4px 0 12px;
+}
+.freq-category { margin-bottom: 18px; }
+.freq-category-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.freq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.freq-card {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  border: 1px solid rgba(255,255,255,.04);
+}
+.freq-card:hover  { background: #1c2d4a; transform: scale(1.02); }
+.freq-card:active { transform: scale(.97); }
+.freq-value {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--vhf);
+  display: block;
+  margin-bottom: 3px;
+}
+.freq-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+  margin-bottom: 2px;
+}
+.freq-desc {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── Protokol paneli ── */
+.protocol-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  margin: 0 0 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.protocol-signals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.signal-card {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  border-left: 3px solid var(--primary);
+}
+.signal-word {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 3px;
+}
+.signal-desc {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.protocol-phase {
+  margin-bottom: 8px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+.phase-num {
+  width: 24px; height: 24px; min-width: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+.phase-title { font-size: 13px; font-weight: 700; }
+.phase-steps { padding: 0 14px 10px 48px; }
+.phase-step {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+  position: relative;
+}
+.phase-step::before {
+  content: '→';
+  position: absolute;
+  left: -14px;
+  color: rgba(255,255,255,.2);
+}
+
 /* ── Download progress ── */
 .download-progress {
   position: fixed;
